@@ -1,7 +1,6 @@
 package one.vitaliy.whatscooking.networking
 
 import io.ktor.client.HttpClient
-import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -10,6 +9,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import one.vitaliy.whatscooking.categories.api.CategoriesResponse
 
 class MealDbApiServices {
     private val baseUrl = "https://www.themealdb.com/api/json/v1/"
@@ -33,5 +33,9 @@ class MealDbApiServices {
 
     suspend fun loadRandomMeal(): MealsResponse {
         return httpClient.get("1/random.php").body()
+    }
+
+    suspend fun getCategories(): CategoriesResponse {
+        return httpClient.get("1/categories.php").body()
     }
 }

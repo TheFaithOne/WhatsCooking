@@ -33,6 +33,9 @@ kotlin {
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.bundles.koin)
         }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -44,13 +47,13 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.bundles.ktor.core)
             implementation(libs.bundles.koin.core)
+            implementation(libs.bundles.coil)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.navigation)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
-            implementation(libs.ktor.client.darwin)
         }
     }
 }

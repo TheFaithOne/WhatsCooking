@@ -18,7 +18,7 @@ serialization = "1.9.0"
 kotlinx-datetime = "0.7.1"
 koin = "4.1.1"
 navigation_compose = "2.9.1"
-
+coil = "3.3.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -49,6 +49,10 @@ koin-viewmodel = { module = "io.insert-koin:koin-core-viewmodel", version.ref = 
 koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 
+#Coil
+coil = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-http = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
+
 
 [bundles]
 ktor-core = [
@@ -65,6 +69,11 @@ koin-core = [
 koin = [
     "koin-android",
     "koin-compose",
+]
+
+coil = [
+    "coil",
+    "coil-http",
 ]
 
 [plugins]
