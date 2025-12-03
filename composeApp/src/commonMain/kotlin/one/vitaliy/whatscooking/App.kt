@@ -20,7 +20,7 @@ fun App() {
                 composable<RandomMealScreen> {
                     RandomMealScreen(
                         paddingValues = paddingValues,
-                        onNavigateToCategories = { navController.navigate(CategoriesPage) }
+                        onNavigateToCategories = { navController.navigate(CategoriesPage) },
                     )
                 }
                 composable<CategoriesPage> {

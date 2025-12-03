@@ -8,5 +8,4 @@ object CategoryDetails
 
 @Composable
 fun CategoryDetailsScreen() {
-
 }

@@ -3,7 +3,7 @@ package one.vitaliy.whatscooking.categories
 import one.vitaliy.whatscooking.networking.MealDbApiServices
 
 class CategoriesRepository(
-    private val mealDbApiServices: MealDbApiServices
+    private val mealDbApiServices: MealDbApiServices,
 ) {
     suspend fun getAllCategories() = mealDbApiServices.getCategories()
 

@@ -36,7 +36,7 @@ fun CategoriesPage(
     LazyColumn(
         modifier = modifier.fillMaxSize().padding(horizontal = 16.dp),
         contentPadding = paddingValues,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         items(items = uiState?.categories.orEmpty(), key = { it.idCategory.orEmpty() }) {
             CategoryItem(
@@ -46,8 +46,8 @@ fun CategoriesPage(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable(
-                        onClick = { onCategoryClick(it.idCategory.orEmpty()) }
-                    )
+                        onClick = { onCategoryClick(it.idCategory.orEmpty()) },
+                    ),
             )
         }
     }
@@ -63,7 +63,7 @@ private fun CategoryItem(
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Text(text = categoryName, style = MaterialTheme.typography.headlineMedium)
         AsyncImage(model = categoryImage, contentDescription = null)

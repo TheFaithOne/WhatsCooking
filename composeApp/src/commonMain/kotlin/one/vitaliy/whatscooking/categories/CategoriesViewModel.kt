@@ -33,5 +33,5 @@ class CategoriesViewModel(
 }
 
 data class CategoryUiState(
-    val categories: List<Category>
+    val categories: List<Category>,
 )
