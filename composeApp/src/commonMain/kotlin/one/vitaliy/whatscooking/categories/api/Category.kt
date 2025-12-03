@@ -12,5 +12,5 @@ data class Category(
     @SerialName("strCategoryDescription")
     val strCategoryDescription: String?,
     @SerialName("strCategoryThumb")
-    val strCategoryThumb: String?
+    val strCategoryThumb: String?,
 )

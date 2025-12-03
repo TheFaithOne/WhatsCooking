@@ -31,7 +31,7 @@ internal fun RandomMealScreen(
                 Text("$ingredient: $measure")
             }
             Button(
-                onClick = onNavigateToCategories
+                onClick = onNavigateToCategories,
             ) {
                 Text("Go to Categories")
             }

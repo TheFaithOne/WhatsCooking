@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CategoriesResponse(
     @SerialName("categories")
-    val categories: List<Category>?
+    val categories: List<Category>?,
 )
