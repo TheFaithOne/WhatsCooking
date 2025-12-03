@@ -13,12 +13,13 @@ class CategoriesViewModel(
     private val apiServices: MealDbApiServices,
 ) : ViewModel() {
 
-    val _uiState = MutableStateFlow<CategoryUiState?>(null)
+    private val _uiState = MutableStateFlow<CategoryUiState?>(null)
     val uiState = _uiState.stateIn(
         viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = null,
     )
+
     init {
         getCategories()
     }

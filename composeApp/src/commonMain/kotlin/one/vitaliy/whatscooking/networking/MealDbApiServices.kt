@@ -38,4 +38,8 @@ class MealDbApiServices {
     suspend fun getCategories(): CategoriesResponse {
         return httpClient.get("1/categories.php").body()
     }
+
+    suspend fun getMealsByCategory(category: String): MealsResponse {
+        return httpClient.get("1/filter.php?c=$category").body()
+    }
 }

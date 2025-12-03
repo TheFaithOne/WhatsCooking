@@ -1,4 +1,4 @@
-package one.vitaliy.whatscooking
+package one.vitaliy.whatscooking.randommeal
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

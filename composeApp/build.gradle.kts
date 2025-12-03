@@ -29,9 +29,11 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.bundles.koin)
+            implementation(libs.bundles.compose)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
