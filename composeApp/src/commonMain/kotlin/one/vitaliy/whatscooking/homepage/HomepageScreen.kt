@@ -11,10 +11,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -51,7 +52,11 @@ internal fun HomepageContainer(
     ) {
         when (it) {
             is HomepageUiState.Content -> Homepage(it)
-            is HomepageUiState.Error -> HomepageError(it)
+            is HomepageUiState.Error -> HomepageError(
+                onRefreshClick = viewModel::refresh,
+                uiState = it
+            )
+
             HomepageUiState.Loading -> CircularProgressIndicator(
                 modifier = Modifier.fillMaxSize().wrapContentSize()
             )
@@ -64,14 +69,38 @@ private fun Homepage(
     uiState: HomepageUiState.Content,
     modifier: Modifier = Modifier,
 ) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
+    Column(
+        modifier = modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        items(items = uiState.latestMeals, key = { it.idMeal.orEmpty() }) {
-            MealCard(it)
+        RecentlyAddedRow(recentlyAdded = uiState.latestMeals)
+    }
+}
+
+@Composable
+private fun RecentlyAddedRow(
+    recentlyAdded: List<Meal>,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Text(
+            text = "Recently added recipes",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = modifier.fillMaxWidth(),
+        ) {
+            items(items = recentlyAdded, key = { it.idMeal.orEmpty() }) {
+                MealCard(it, modifier = Modifier.animateItem())
+            }
         }
+
     }
 }
 
@@ -81,13 +110,11 @@ private fun MealCard(
     modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp),
+        modifier = modifier,
         shape = RoundedCornerShape(8.dp),
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+            modifier = Modifier.padding(bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -95,14 +122,11 @@ private fun MealCard(
                 model = meal.strMealThumb,
                 contentDescription = meal.strMeal,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxWidth(),
             )
             Text(
                 text = "${meal.strMeal}",
                 style = MaterialTheme.typography.bodyMedium,
                 textAlign = TextAlign.Center,
-                maxLines = 2,
-                minLines = 2,
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
             )
             Row(
@@ -128,11 +152,12 @@ private fun MealCard(
 
 @Composable
 private fun HomepageError(
+    onRefreshClick: () -> Unit,
     uiState: HomepageUiState.Error,
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -140,9 +165,7 @@ private fun HomepageError(
         Text("Ooops, something went wrong!\n${uiState.throwable.message}")
         Button(
             modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                // TODO: Refresh
-            }
+            onClick = onRefreshClick,
         ) {
             Text("Retry")
         }

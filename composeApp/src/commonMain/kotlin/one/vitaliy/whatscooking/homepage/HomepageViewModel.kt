@@ -37,6 +37,10 @@ class HomepageViewModel(
             }
         }
     }
+
+    fun refresh() {
+        fetchLatestMeals()
+    }
 }
 
 sealed interface HomepageUiState {
