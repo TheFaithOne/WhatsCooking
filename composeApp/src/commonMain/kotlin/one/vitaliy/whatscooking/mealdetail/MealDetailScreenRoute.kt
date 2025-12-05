@@ -1,0 +1,183 @@
+package one.vitaliy.whatscooking.mealdetail
+
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
+import kotlinx.serialization.Serializable
+import one.vitaliy.whatscooking.compose.PreviewTheme
+import one.vitaliy.whatscooking.networking.Meal
+import one.vitaliy.whatscooking.ui.theme.WhatsCookingTheme
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
+
+@Serializable
+data class MealDetailScreenRoute(val mealId: String)
+
+@Composable
+internal fun MealDetailScreen(
+    mealId: String,
+    paddingValues: PaddingValues,
+    modifier: Modifier = Modifier,
+) {
+    val viewModel = koinViewModel<MealDetailViewModel>()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        viewModel.getMealDetails(mealId)
+    }
+    MealDetail(
+        uiState = uiState,
+        onRefresh = { viewModel.refresh(mealId) },
+        modifier = modifier.padding(paddingValues),
+    )
+}
+
+@Composable
+private fun MealDetail(
+    uiState: MealDetailUiState,
+    onRefresh: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    AnimatedContent(
+        targetState = uiState,
+        modifier = modifier.fillMaxSize(),
+    ) {
+        when (it) {
+            is MealDetailUiState.Loading -> CircularProgressIndicator(
+                modifier = Modifier.fillMaxSize().wrapContentHeight()
+            )
+
+            is MealDetailUiState.Content -> MealDetailContent(uiState = it)
+            is MealDetailUiState.Error -> MealDetailError(uiState = it, onRefresh = onRefresh)
+        }
+    }
+
+}
+
+@Composable
+private fun MealDetailContent(
+    uiState: MealDetailUiState.Content,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.verticalScroll(rememberScrollState()).fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        AsyncImage(
+            model = uiState.meal.imageUrl,
+            contentDescription = "Image of ${uiState.meal.name}",
+            contentScale = ContentScale.FillWidth,
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Text(
+            text = uiState.meal.name.orEmpty(),
+            style = WhatsCookingTheme.typography.headline.medium,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        )
+        MealDetails(uiState.meal, modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp))
+        Text(
+            text = uiState.meal.instructions.orEmpty(),
+            style = WhatsCookingTheme.typography.body.medium,
+        )
+        if (!uiState.meal.youtubeUrl.isNullOrBlank()) {
+            Button(
+                onClick = {
+                    // TODO: Open an intent with the provided link
+                }
+            ) {
+                Text(
+                    "Watch on YouTube",
+                    style = WhatsCookingTheme.typography.label.medium,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun MealDetails(
+    meal: Meal,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = meal.tags.orEmpty(),
+                style = WhatsCookingTheme.typography.body.medium,
+            )
+            Text(
+                text = meal.areaOfOrigin.orEmpty(),
+                style = WhatsCookingTheme.typography.body.medium,
+            )
+        }
+        Spacer(Modifier.height(16.dp))
+        meal.getIngredientsWithMeasures().forEach { ingredients ->
+            Text(
+                text = "\u2022 ${ingredients.key}: ${ingredients.value}",
+                style = WhatsCookingTheme.typography.body.medium,
+            )
+        }
+    }
+}
+
+@Composable
+private fun MealDetailError(
+    uiState: MealDetailUiState.Error, onRefresh: () -> Unit, modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        // FIXME: Extract string literals to resources
+        Text(
+            text = "Oops, we can't fetch the meal details. Please try again later.",
+            style = WhatsCookingTheme.typography.headline.large,
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+        )
+        Text(
+            text = uiState.throwable.message.orEmpty(),
+            style = WhatsCookingTheme.typography.body.medium,
+        )
+        Button(
+            onClick = onRefresh, modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Refresh")
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun MealDetailPreview() {
+    PreviewTheme {
+        MealDetailScreen(paddingValues = PaddingValues(), mealId = "")
+    }
+}

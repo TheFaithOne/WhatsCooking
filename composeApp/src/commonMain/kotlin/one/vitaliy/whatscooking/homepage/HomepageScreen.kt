@@ -43,6 +43,7 @@ object HomepageScreen
 
 @Composable
 internal fun HomepageScreen(
+    navigateToMealDetail: (String) -> Unit,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
@@ -51,6 +52,7 @@ internal fun HomepageScreen(
     HomepageContainer(
         uiState,
         onRefreshClick = viewModel::refresh,
+        onMealClicked = navigateToMealDetail,
         modifier = modifier.fillMaxSize().padding(paddingValues)
     )
 }
@@ -59,6 +61,7 @@ internal fun HomepageScreen(
 private fun HomepageContainer(
     uiState: HomepageUiState,
     onRefreshClick: () -> Unit,
+    onMealClicked: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     AnimatedContent(
@@ -66,7 +69,11 @@ private fun HomepageContainer(
         modifier = modifier
     ) {
         when (it) {
-            is HomepageUiState.Content -> HomepageContent(it)
+            is HomepageUiState.Content -> HomepageContent(
+                uiState = it,
+                onMealClicked = onMealClicked,
+            )
+
             is HomepageUiState.Error -> HomepageError(
                 onRefreshClick = onRefreshClick,
                 uiState = it
@@ -82,19 +89,21 @@ private fun HomepageContainer(
 @Composable
 private fun HomepageContent(
     uiState: HomepageUiState.Content,
+    onMealClicked: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        RecentlyAddedRow(recentlyAdded = uiState.latestMeals)
+        RecentlyAddedRow(recentlyAdded = uiState.latestMeals, onMealClicked = onMealClicked)
     }
 }
 
 @Composable
 private fun RecentlyAddedRow(
     recentlyAdded: List<Meal>,
+    onMealClicked: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -111,8 +120,8 @@ private fun RecentlyAddedRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = modifier.fillMaxWidth(),
         ) {
-            items(items = recentlyAdded, key = { it.idMeal.orEmpty() }) {
-                MealCard(it, modifier = Modifier.animateItem())
+            items(items = recentlyAdded, key = { it.id.orEmpty() }) {
+                MealCard(it, modifier = Modifier.animateItem(), onMealClicked = onMealClicked)
             }
         }
 
@@ -122,11 +131,13 @@ private fun RecentlyAddedRow(
 @Composable
 private fun MealCard(
     meal: Meal,
+    onMealClicked: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(8.dp),
+        onClick = { onMealClicked(meal.id.orEmpty()) }
     ) {
         Column(
             modifier = Modifier.padding(bottom = 16.dp),
@@ -134,12 +145,12 @@ private fun MealCard(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             AsyncImage(
-                model = meal.strMealThumb,
-                contentDescription = meal.strMeal,
+                model = meal.imageUrl,
+                contentDescription = meal.name,
                 contentScale = ContentScale.Crop,
             )
             Text(
-                text = "${meal.strMeal}",
+                text = "${meal.name}",
                 style = WhatsCookingTheme.typography.body.medium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
@@ -150,13 +161,13 @@ private fun MealCard(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
             ) {
                 Text(
-                    text = "${meal.strArea}",
+                    text = "${meal.areaOfOrigin}",
                     style = WhatsCookingTheme.typography.label.medium,
                     textAlign = TextAlign.Center,
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    text = "${meal.strCategory}",
+                    text = "${meal.category}",
                     style = WhatsCookingTheme.typography.label.medium,
                     textAlign = TextAlign.Center,
                 )
@@ -193,7 +204,7 @@ private fun HomepagePreview(
     @PreviewParameter(HomepagePreviewProvider::class) uiState: HomepageUiState
 ) {
     PreviewTheme {
-        HomepageContainer(uiState, onRefreshClick = {})
+        HomepageContainer(uiState, onRefreshClick = {}, onMealClicked = {})
     }
 }
 
@@ -203,46 +214,46 @@ private class HomepagePreviewProvider : PreviewParameterProvider<HomepageUiState
         HomepageUiState.Content(
             listOf(
                 Meal(
-                    idMeal = "52940",
-                    strMeal = "Brown Stew Chicken",
-                    strCategory = "Chicken",
-                    strArea = "Jamaican",
-                    strMealThumb = "https://www.themealdb.com/images/media/meals/sypxpx1515365095.jpg",
+                    id = "52940",
+                    name = "Brown Stew Chicken",
+                    category = "Chicken",
+                    areaOfOrigin = "Jamaican",
+                    imageUrl = "https://www.themealdb.com/images/media/meals/sypxpx1515365095.jpg",
                     strIngredient1 = "Chicken",
                     strIngredient2 = "Tomato",
                     strIngredient3 = "Onions",
                     strMeasure1 = "1 whole",
                     strMeasure2 = "2 chopped",
                     strMeasure3 = "2 sliced",
-                    strInstructions = "Prepare the chicken by cutting it into pieces..."
+                    instructions = "Prepare the chicken by cutting it into pieces..."
                 ),
                 Meal(
-                    idMeal = "52772",
-                    strMeal = "Teriyaki Chicken Casserole",
-                    strCategory = "Chicken",
-                    strArea = "Japanese",
-                    strMealThumb = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg",
+                    id = "52772",
+                    name = "Teriyaki Chicken Casserole",
+                    category = "Chicken",
+                    areaOfOrigin = "Japanese",
+                    imageUrl = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg",
                     strIngredient1 = "Chicken",
                     strIngredient2 = "Soy Sauce",
                     strIngredient3 = "Ginger",
                     strMeasure1 = "750g",
                     strMeasure2 = "3 tbsp",
                     strMeasure3 = "1 tsp",
-                    strInstructions = "Mix the soy sauce, ginger and garlic..."
+                    instructions = "Mix the soy sauce, ginger and garlic..."
                 ),
                 Meal(
-                    idMeal = "52804",
-                    strMeal = "Poutine",
-                    strCategory = "Miscellaneous",
-                    strArea = "Canadian",
-                    strMealThumb = "https://www.themealdb.com/images/media/meals/uuyrrx1487327597.jpg",
+                    id = "52804",
+                    name = "Poutine",
+                    category = "Miscellaneous",
+                    areaOfOrigin = "Canadian",
+                    imageUrl = "https://www.themealdb.com/images/media/meals/uuyrrx1487327597.jpg",
                     strIngredient1 = "Fries",
                     strIngredient2 = "Cheese Curds",
                     strIngredient3 = "Gravy",
                     strMeasure1 = "500g",
                     strMeasure2 = "200g",
                     strMeasure3 = "200ml",
-                    strInstructions = "Heat the fries until crispy..."
+                    instructions = "Heat the fries until crispy..."
                 )
             )
         ),
