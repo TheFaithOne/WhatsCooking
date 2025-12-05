@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -32,9 +33,6 @@ import one.vitaliy.whatscooking.networking.Meal
 import one.vitaliy.whatscooking.ui.theme.WhatsCookingTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
-
-@Serializable
-data class MealDetailScreenRoute(val mealId: String)
 
 @Composable
 internal fun MealDetailScreen(
@@ -102,9 +100,10 @@ private fun MealDetailContent(
             style = WhatsCookingTheme.typography.body.medium,
         )
         if (!uiState.meal.youtubeUrl.isNullOrBlank()) {
+            val uriHandler = LocalUriHandler.current
             Button(
                 onClick = {
-                    // TODO: Open an intent with the provided link
+                    uriHandler.openUri(uiState.meal.youtubeUrl)
                 },
             ) {
                 Text(
@@ -183,3 +182,6 @@ private fun MealDetailPreview() {
         MealDetailScreen(paddingValues = PaddingValues(), mealId = "")
     }
 }
+
+@Serializable
+data class MealDetailScreenRoute(val mealId: String)
