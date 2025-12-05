@@ -13,11 +13,9 @@ import one.vitaliy.whatscooking.mealdetail.MealDetailScreen
 import one.vitaliy.whatscooking.mealdetail.MealDetailScreenRoute
 import one.vitaliy.whatscooking.randommeal.RandomMealScreen
 import one.vitaliy.whatscooking.ui.theme.WhatsCookingTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinApplication
 
 @Composable
-@Preview
 fun App() {
     KoinApplication(
         application = { initKoin() },

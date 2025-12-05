@@ -118,7 +118,7 @@ private fun RecentlyAddedRow(
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
         ) {
             items(items = recentlyAdded, key = { it.id.orEmpty() }) {
                 MealCard(it, modifier = Modifier.animateItem(), onMealClicked = onMealClicked)
