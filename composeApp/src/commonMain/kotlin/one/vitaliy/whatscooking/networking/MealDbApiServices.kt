@@ -49,4 +49,8 @@ class MealDbApiServices {
     suspend fun getLatestMeals(): MealsResponse {
         return httpClient.get("$tempApiKey/latest.php").body()
     }
+
+    suspend fun getMealById(id: String): MealsResponse {
+        return httpClient.get("$tempApiKey/lookup.php?i=$id").body()
+    }
 }

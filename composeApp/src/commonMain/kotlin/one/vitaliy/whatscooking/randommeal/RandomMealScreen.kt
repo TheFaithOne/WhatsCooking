@@ -24,8 +24,8 @@ internal fun RandomMealScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     Column(modifier = modifier.fillMaxSize().padding(paddingValues)) {
         state?.meals?.forEach {
-            Text("${it.strMeal}")
-            Text("${it.strTags}")
+            Text("${it.name}")
+            Text("${it.tags}")
 
             it.getIngredientsWithMeasures().forEach { (ingredient, measure) ->
                 Text("$ingredient: $measure")

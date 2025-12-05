@@ -8,15 +8,15 @@ data class Meal(
     @SerialName("dateModified")
     val dateModified: String? = null,
     @SerialName("idMeal")
-    val idMeal: String? = null,
+    val id: String? = null,
     @SerialName("strArea")
-    val strArea: String? = null,
+    val areaOfOrigin: String? = null,
     @SerialName("strCategory")
-    val strCategory: String? = null,
+    val category: String? = null,
     @SerialName("strCreativeCommonsConfirmed")
     val strCreativeCommonsConfirmed: Boolean? = null,
     @SerialName("strImageSource")
-    val strImageSource: String? = null,
+    val imageSource: String? = null,
     @SerialName("strIngredient1")
     val strIngredient1: String? = null,
     @SerialName("strIngredient10")
@@ -58,13 +58,13 @@ data class Meal(
     @SerialName("strIngredient9")
     val strIngredient9: String? = null,
     @SerialName("strInstructions")
-    val strInstructions: String? = null,
+    val instructions: String? = null,
     @SerialName("strMeal")
-    val strMeal: String? = null,
+    val name: String? = null,
     @SerialName("strMealAlternate")
-    val strMealAlternate: String? = null,
+    val alternative: String? = null,
     @SerialName("strMealThumb")
-    val strMealThumb: String? = null,
+    val imageUrl: String? = null,
     @SerialName("strMeasure1")
     val strMeasure1: String? = null,
     @SerialName("strMeasure10")
@@ -106,11 +106,11 @@ data class Meal(
     @SerialName("strMeasure9")
     val strMeasure9: String? = null,
     @SerialName("strSource")
-    val strSource: String? = null,
+    val source: String? = null,
     @SerialName("strTags")
-    val strTags: String? = null,
+    val tags: String? = null,
     @SerialName("strYoutube")
-    val strYoutube: String? = null,
+    val youtubeUrl: String? = null,
 ) {
     /**
      * Returns a map of ingredients to their measures.
