@@ -58,7 +58,7 @@ internal fun MealDetailScreen(
 private fun MealDetail(
     uiState: MealDetailUiState,
     onRefresh: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     AnimatedContent(
         targetState = uiState,
@@ -66,14 +66,13 @@ private fun MealDetail(
     ) {
         when (it) {
             is MealDetailUiState.Loading -> CircularProgressIndicator(
-                modifier = Modifier.fillMaxSize().wrapContentHeight()
+                modifier = Modifier.fillMaxSize().wrapContentHeight(),
             )
 
             is MealDetailUiState.Content -> MealDetailContent(uiState = it)
             is MealDetailUiState.Error -> MealDetailError(uiState = it, onRefresh = onRefresh)
         }
     }
-
 }
 
 @Composable
@@ -106,7 +105,7 @@ private fun MealDetailContent(
             Button(
                 onClick = {
                     // TODO: Open an intent with the provided link
-                }
+                },
             ) {
                 Text(
                     "Watch on YouTube",
@@ -148,7 +147,9 @@ private fun MealDetails(
 
 @Composable
 private fun MealDetailError(
-    uiState: MealDetailUiState.Error, onRefresh: () -> Unit, modifier: Modifier = Modifier
+    uiState: MealDetailUiState.Error,
+    onRefresh: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -167,7 +168,8 @@ private fun MealDetailError(
             style = WhatsCookingTheme.typography.body.medium,
         )
         Button(
-            onClick = onRefresh, modifier = Modifier.fillMaxWidth()
+            onClick = onRefresh,
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Text("Refresh")
         }

@@ -86,7 +86,7 @@ val LocalWhatsCookingTypography = staticCompositionLocalOf {
 @Composable
 fun WhatsCookingTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val materialColorScheme = when {
         darkTheme -> DarkColorScheme
@@ -105,11 +105,10 @@ fun WhatsCookingTheme(
         MaterialTheme(
             colorScheme = materialColorScheme,
             typography = Typography,
-            content = content
+            content = content,
         )
     }
 }
-
 
 object WhatsCookingTheme {
     val colors: WhatsCookingColors

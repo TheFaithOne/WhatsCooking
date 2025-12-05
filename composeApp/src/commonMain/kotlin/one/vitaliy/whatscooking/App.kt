@@ -20,7 +20,7 @@ import org.koin.compose.KoinApplication
 @Preview
 fun App() {
     KoinApplication(
-        application = { initKoin() }
+        application = { initKoin() },
     ) {
         WhatsCookingTheme {
             Scaffold { paddingValues ->
@@ -43,7 +43,7 @@ fun App() {
                             paddingValues = paddingValues,
                             navigateToMealDetail = { mealId ->
                                 navController.navigate(MealDetailScreenRoute(mealId))
-                            }
+                            },
                         )
                     }
                     composable<MealDetailScreenRoute> {
@@ -54,5 +54,4 @@ fun App() {
             }
         }
     }
-
 }

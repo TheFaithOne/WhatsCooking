@@ -45,7 +45,7 @@ object HomepageScreen
 internal fun HomepageScreen(
     navigateToMealDetail: (String) -> Unit,
     paddingValues: PaddingValues,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val viewModel = koinViewModel<HomepageViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -53,7 +53,7 @@ internal fun HomepageScreen(
         uiState,
         onRefreshClick = viewModel::refresh,
         onMealClicked = navigateToMealDetail,
-        modifier = modifier.fillMaxSize().padding(paddingValues)
+        modifier = modifier.fillMaxSize().padding(paddingValues),
     )
 }
 
@@ -66,7 +66,7 @@ private fun HomepageContainer(
 ) {
     AnimatedContent(
         uiState,
-        modifier = modifier
+        modifier = modifier,
     ) {
         when (it) {
             is HomepageUiState.Content -> HomepageContent(
@@ -76,11 +76,11 @@ private fun HomepageContainer(
 
             is HomepageUiState.Error -> HomepageError(
                 onRefreshClick = onRefreshClick,
-                uiState = it
+                uiState = it,
             )
 
             HomepageUiState.Loading -> CircularProgressIndicator(
-                modifier = Modifier.fillMaxSize().wrapContentSize()
+                modifier = Modifier.fillMaxSize().wrapContentSize(),
             )
         }
     }
@@ -104,7 +104,7 @@ private fun HomepageContent(
 private fun RecentlyAddedRow(
     recentlyAdded: List<Meal>,
     onMealClicked: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -113,7 +113,7 @@ private fun RecentlyAddedRow(
         Text(
             text = "Recently added recipes",
             style = WhatsCookingTheme.typography.headline.medium,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
@@ -124,7 +124,6 @@ private fun RecentlyAddedRow(
                 MealCard(it, modifier = Modifier.animateItem(), onMealClicked = onMealClicked)
             }
         }
-
     }
 }
 
@@ -137,7 +136,7 @@ private fun MealCard(
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(8.dp),
-        onClick = { onMealClicked(meal.id.orEmpty()) }
+        onClick = { onMealClicked(meal.id.orEmpty()) },
     ) {
         Column(
             modifier = Modifier.padding(bottom = 16.dp),
@@ -153,12 +152,12 @@ private fun MealCard(
                 text = "${meal.name}",
                 style = WhatsCookingTheme.typography.body.medium,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
             )
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
             ) {
                 Text(
                     text = "${meal.areaOfOrigin}",
@@ -201,7 +200,7 @@ private fun HomepageError(
 @Preview
 @Composable
 private fun HomepagePreview(
-    @PreviewParameter(HomepagePreviewProvider::class) uiState: HomepageUiState
+    @PreviewParameter(HomepagePreviewProvider::class) uiState: HomepageUiState,
 ) {
     PreviewTheme {
         HomepageContainer(uiState, onRefreshClick = {}, onMealClicked = {})
@@ -225,7 +224,7 @@ private class HomepagePreviewProvider : PreviewParameterProvider<HomepageUiState
                     strMeasure1 = "1 whole",
                     strMeasure2 = "2 chopped",
                     strMeasure3 = "2 sliced",
-                    instructions = "Prepare the chicken by cutting it into pieces..."
+                    instructions = "Prepare the chicken by cutting it into pieces...",
                 ),
                 Meal(
                     id = "52772",
@@ -239,7 +238,7 @@ private class HomepagePreviewProvider : PreviewParameterProvider<HomepageUiState
                     strMeasure1 = "750g",
                     strMeasure2 = "3 tbsp",
                     strMeasure3 = "1 tsp",
-                    instructions = "Mix the soy sauce, ginger and garlic..."
+                    instructions = "Mix the soy sauce, ginger and garlic...",
                 ),
                 Meal(
                     id = "52804",
@@ -253,10 +252,10 @@ private class HomepagePreviewProvider : PreviewParameterProvider<HomepageUiState
                     strMeasure1 = "500g",
                     strMeasure2 = "200g",
                     strMeasure3 = "200ml",
-                    instructions = "Heat the fries until crispy..."
-                )
-            )
+                    instructions = "Heat the fries until crispy...",
+                ),
+            ),
         ),
-        HomepageUiState.Error(Throwable("Error"))
+        HomepageUiState.Error(Throwable("Error")),
     )
 }
