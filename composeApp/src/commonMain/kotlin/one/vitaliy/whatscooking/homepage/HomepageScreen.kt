@@ -19,7 +19,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,29 +30,45 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import kotlinx.serialization.Serializable
+import one.vitaliy.whatscooking.compose.PreviewTheme
 import one.vitaliy.whatscooking.networking.Meal
 import one.vitaliy.whatscooking.ui.theme.WhatsCookingTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.jetbrains.compose.ui.tooling.preview.PreviewParameter
+import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
 object HomepageScreen
 
 @Composable
-internal fun HomepageContainer(
+internal fun HomepageScreen(
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier
 ) {
     val viewModel = koinViewModel<HomepageViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    HomepageContainer(
+        uiState,
+        onRefreshClick = viewModel::refresh,
+        modifier = modifier.fillMaxSize().padding(paddingValues)
+    )
+}
+
+@Composable
+private fun HomepageContainer(
+    uiState: HomepageUiState,
+    onRefreshClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     AnimatedContent(
         uiState,
-        modifier = modifier.fillMaxSize().padding(paddingValues)
+        modifier = modifier
     ) {
         when (it) {
-            is HomepageUiState.Content -> Homepage(it)
+            is HomepageUiState.Content -> HomepageContent(it)
             is HomepageUiState.Error -> HomepageError(
-                onRefreshClick = viewModel::refresh,
+                onRefreshClick = onRefreshClick,
                 uiState = it
             )
 
@@ -65,7 +80,7 @@ internal fun HomepageContainer(
 }
 
 @Composable
-private fun Homepage(
+private fun HomepageContent(
     uiState: HomepageUiState.Content,
     modifier: Modifier = Modifier,
 ) {
@@ -88,7 +103,7 @@ private fun RecentlyAddedRow(
     ) {
         Text(
             text = "Recently added recipes",
-            style = MaterialTheme.typography.headlineMedium,
+            style = WhatsCookingTheme.typography.headline.medium,
             modifier = Modifier.padding(horizontal = 16.dp)
         )
         LazyRow(
@@ -125,7 +140,7 @@ private fun MealCard(
             )
             Text(
                 text = "${meal.strMeal}",
-                style = MaterialTheme.typography.bodyMedium,
+                style = WhatsCookingTheme.typography.body.medium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)
             )
@@ -136,13 +151,13 @@ private fun MealCard(
             ) {
                 Text(
                     text = "${meal.strArea}",
-                    style = MaterialTheme.typography.labelMedium,
+                    style = WhatsCookingTheme.typography.label.medium,
                     textAlign = TextAlign.Center,
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
                     text = "${meal.strCategory}",
-                    style = MaterialTheme.typography.labelMedium,
+                    style = WhatsCookingTheme.typography.label.medium,
                     textAlign = TextAlign.Center,
                 )
             }
@@ -174,8 +189,63 @@ private fun HomepageError(
 
 @Preview
 @Composable
-private fun HomepagePreview() {
-    WhatsCookingTheme {
-        HomepageContainer(PaddingValues())
+private fun HomepagePreview(
+    @PreviewParameter(HomepagePreviewProvider::class) uiState: HomepageUiState
+) {
+    PreviewTheme {
+        HomepageContainer(uiState, onRefreshClick = {})
     }
+}
+
+private class HomepagePreviewProvider : PreviewParameterProvider<HomepageUiState> {
+    override val values: Sequence<HomepageUiState> = sequenceOf(
+        HomepageUiState.Loading,
+        HomepageUiState.Content(
+            listOf(
+                Meal(
+                    idMeal = "52940",
+                    strMeal = "Brown Stew Chicken",
+                    strCategory = "Chicken",
+                    strArea = "Jamaican",
+                    strMealThumb = "https://www.themealdb.com/images/media/meals/sypxpx1515365095.jpg",
+                    strIngredient1 = "Chicken",
+                    strIngredient2 = "Tomato",
+                    strIngredient3 = "Onions",
+                    strMeasure1 = "1 whole",
+                    strMeasure2 = "2 chopped",
+                    strMeasure3 = "2 sliced",
+                    strInstructions = "Prepare the chicken by cutting it into pieces..."
+                ),
+                Meal(
+                    idMeal = "52772",
+                    strMeal = "Teriyaki Chicken Casserole",
+                    strCategory = "Chicken",
+                    strArea = "Japanese",
+                    strMealThumb = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg",
+                    strIngredient1 = "Chicken",
+                    strIngredient2 = "Soy Sauce",
+                    strIngredient3 = "Ginger",
+                    strMeasure1 = "750g",
+                    strMeasure2 = "3 tbsp",
+                    strMeasure3 = "1 tsp",
+                    strInstructions = "Mix the soy sauce, ginger and garlic..."
+                ),
+                Meal(
+                    idMeal = "52804",
+                    strMeal = "Poutine",
+                    strCategory = "Miscellaneous",
+                    strArea = "Canadian",
+                    strMealThumb = "https://www.themealdb.com/images/media/meals/uuyrrx1487327597.jpg",
+                    strIngredient1 = "Fries",
+                    strIngredient2 = "Cheese Curds",
+                    strIngredient3 = "Gravy",
+                    strMeasure1 = "500g",
+                    strMeasure2 = "200g",
+                    strMeasure3 = "200ml",
+                    strInstructions = "Heat the fries until crispy..."
+                )
+            )
+        ),
+        HomepageUiState.Error(Throwable("Error"))
+    )
 }
