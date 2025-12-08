@@ -23,10 +23,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import kotlinx.serialization.Serializable
 import one.vitaliy.whatscooking.networking.Meal
-import one.vitaliy.whatscooking.ui.Strings
 import one.vitaliy.whatscooking.ui.theme.WhatsCookingTheme
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+import whatscooking.composeapp.generated.resources.Res
+import whatscooking.composeapp.generated.resources.error_generic
+import whatscooking.composeapp.generated.resources.error_retry
+import whatscooking.composeapp.generated.resources.random_meal_go_to_categories
 
 @Composable
 internal fun RandomMealScreen(
@@ -71,7 +75,7 @@ private fun RandomMealContent(
     ) {
         AsyncImage(
             model = meal.imageUrl,
-            contentDescription = Strings.formatImageDescription(meal.name.orEmpty()),
+            contentDescription = meal.name,
             modifier = Modifier.fillMaxWidth(),
         )
         Text(
@@ -84,7 +88,7 @@ private fun RandomMealContent(
         )
         meal.getIngredientsWithMeasures().forEach { (ingredient, measure) ->
             Text(
-                text = Strings.formatIngredient(ingredient, measure),
+                text = "• $ingredient: $measure",
                 style = WhatsCookingTheme.typography.body.medium,
             )
         }
@@ -92,7 +96,7 @@ private fun RandomMealContent(
             onClick = onNavigateToCategories,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text(Strings.RANDOM_MEAL_GO_TO_CATEGORIES)
+            Text(stringResource(Res.string.random_meal_go_to_categories))
         }
     }
 }
@@ -109,7 +113,7 @@ private fun RandomMealError(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = "${Strings.ERROR_GENERIC}\n${throwable.message}",
+            text = stringResource(Res.string.error_generic, throwable.message.orEmpty()),
             style = WhatsCookingTheme.typography.body.medium,
             textAlign = TextAlign.Center,
         )
@@ -117,7 +121,7 @@ private fun RandomMealError(
             modifier = Modifier.fillMaxWidth(),
             onClick = onRetry,
         ) {
-            Text(Strings.ERROR_RETRY)
+            Text(stringResource(Res.string.error_retry))
         }
     }
 }

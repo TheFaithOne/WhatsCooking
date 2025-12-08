@@ -1,0 +1,19 @@
+<resources>
+    <!-- App Name -->
+    <string name="app_name">What\'s Cooking</string>
+
+    <!-- Homepage Screen -->
+    <string name="homepage_recently_added_recipes">Recently added recipes</string>
+
+    <!-- Meal Detail Screen -->
+    <string name="meal_detail_watch_youtube">Watch on YouTube</string>
+    <string name="meal_detail_error_title">Oops, we can\'t fetch the meal details. Please try again later.</string>
+    <string name="meal_detail_refresh">Refresh</string>
+
+    <!-- Random Meal Screen -->
+    <string name="random_meal_go_to_categories">Go to Categories</string>
+
+    <!-- Error Messages -->
+    <string name="error_generic">Ooops, something went wrong!\n%1$s</string>
+    <string name="error_retry">Retry</string>
+</resources>

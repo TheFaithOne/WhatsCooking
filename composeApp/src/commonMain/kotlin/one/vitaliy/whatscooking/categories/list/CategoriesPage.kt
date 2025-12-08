@@ -25,9 +25,12 @@ import coil3.compose.AsyncImage
 import kotlinx.serialization.Serializable
 import one.vitaliy.whatscooking.categories.CategoriesViewModel
 import one.vitaliy.whatscooking.categories.CategoryUiState
-import one.vitaliy.whatscooking.ui.Strings
 import one.vitaliy.whatscooking.ui.theme.WhatsCookingTheme
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import whatscooking.composeapp.generated.resources.Res
+import whatscooking.composeapp.generated.resources.error_generic
+import whatscooking.composeapp.generated.resources.error_retry
 
 @Serializable
 object CategoriesPage
@@ -127,7 +130,7 @@ private fun CategoriesError(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = "${Strings.ERROR_GENERIC}\n${throwable.message}",
+            text = stringResource(Res.string.error_generic, throwable.message.orEmpty()),
             style = WhatsCookingTheme.typography.body.medium,
             textAlign = TextAlign.Center,
         )
@@ -135,7 +138,7 @@ private fun CategoriesError(
             modifier = Modifier.fillMaxWidth(),
             onClick = onRetry,
         ) {
-            Text(Strings.ERROR_RETRY)
+            Text(stringResource(Res.string.error_retry))
         }
     }
 }

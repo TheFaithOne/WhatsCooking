@@ -30,10 +30,14 @@ import coil3.compose.AsyncImage
 import kotlinx.serialization.Serializable
 import one.vitaliy.whatscooking.compose.PreviewTheme
 import one.vitaliy.whatscooking.networking.Meal
-import one.vitaliy.whatscooking.ui.Strings
 import one.vitaliy.whatscooking.ui.theme.WhatsCookingTheme
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+import whatscooking.composeapp.generated.resources.Res
+import whatscooking.composeapp.generated.resources.meal_detail_error_title
+import whatscooking.composeapp.generated.resources.meal_detail_refresh
+import whatscooking.composeapp.generated.resources.meal_detail_watch_youtube
 
 @Composable
 internal fun MealDetailScreen(
@@ -86,7 +90,7 @@ private fun MealDetailContent(
     ) {
         AsyncImage(
             model = uiState.meal.imageUrl,
-            contentDescription = Strings.formatImageDescription(uiState.meal.name.orEmpty()),
+            contentDescription = uiState.meal.name,
             contentScale = ContentScale.FillWidth,
             modifier = Modifier.fillMaxWidth(),
         )
@@ -108,7 +112,7 @@ private fun MealDetailContent(
                 },
             ) {
                 Text(
-                    Strings.MEAL_DETAIL_WATCH_YOUTUBE,
+                    stringResource(Res.string.meal_detail_watch_youtube),
                     style = WhatsCookingTheme.typography.label.medium,
                 )
             }
@@ -138,7 +142,7 @@ private fun MealDetails(
         Spacer(Modifier.height(16.dp))
         meal.getIngredientsWithMeasures().forEach { (ingredient, measure) ->
             Text(
-                text = Strings.formatIngredient(ingredient, measure),
+                text = "• $ingredient: $measure",
                 style = WhatsCookingTheme.typography.body.medium,
             )
         }
@@ -157,7 +161,7 @@ private fun MealDetailError(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
-            text = Strings.MEAL_DETAIL_ERROR_TITLE,
+            text = stringResource(Res.string.meal_detail_error_title),
             style = WhatsCookingTheme.typography.headline.large,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
@@ -171,7 +175,7 @@ private fun MealDetailError(
             onClick = onRefresh,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text(Strings.MEAL_DETAIL_REFRESH)
+            Text(stringResource(Res.string.meal_detail_refresh))
         }
     }
 }
