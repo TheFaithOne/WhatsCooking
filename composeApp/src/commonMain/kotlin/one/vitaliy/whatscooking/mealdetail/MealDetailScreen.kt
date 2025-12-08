@@ -30,6 +30,7 @@ import coil3.compose.AsyncImage
 import kotlinx.serialization.Serializable
 import one.vitaliy.whatscooking.compose.PreviewTheme
 import one.vitaliy.whatscooking.networking.Meal
+import one.vitaliy.whatscooking.ui.Strings
 import one.vitaliy.whatscooking.ui.theme.WhatsCookingTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -85,7 +86,7 @@ private fun MealDetailContent(
     ) {
         AsyncImage(
             model = uiState.meal.imageUrl,
-            contentDescription = "Image of ${uiState.meal.name}",
+            contentDescription = Strings.formatImageDescription(uiState.meal.name.orEmpty()),
             contentScale = ContentScale.FillWidth,
             modifier = Modifier.fillMaxWidth(),
         )
@@ -107,7 +108,7 @@ private fun MealDetailContent(
                 },
             ) {
                 Text(
-                    "Watch on YouTube",
+                    Strings.MEAL_DETAIL_WATCH_YOUTUBE,
                     style = WhatsCookingTheme.typography.label.medium,
                 )
             }
@@ -135,9 +136,9 @@ private fun MealDetails(
             )
         }
         Spacer(Modifier.height(16.dp))
-        meal.getIngredientsWithMeasures().forEach { ingredients ->
+        meal.getIngredientsWithMeasures().forEach { (ingredient, measure) ->
             Text(
-                text = "\u2022 ${ingredients.key}: ${ingredients.value}",
+                text = Strings.formatIngredient(ingredient, measure),
                 style = WhatsCookingTheme.typography.body.medium,
             )
         }
@@ -151,13 +152,12 @@ private fun MealDetailError(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        // FIXME: Extract string literals to resources
         Text(
-            text = "Oops, we can't fetch the meal details. Please try again later.",
+            text = Strings.MEAL_DETAIL_ERROR_TITLE,
             style = WhatsCookingTheme.typography.headline.large,
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
@@ -165,12 +165,13 @@ private fun MealDetailError(
         Text(
             text = uiState.throwable.message.orEmpty(),
             style = WhatsCookingTheme.typography.body.medium,
+            textAlign = TextAlign.Center,
         )
         Button(
             onClick = onRefresh,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text("Refresh")
+            Text(Strings.MEAL_DETAIL_REFRESH)
         }
     }
 }

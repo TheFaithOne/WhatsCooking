@@ -33,7 +33,6 @@ fun App() {
                     composable<CategoriesPage> {
                         CategoriesPage(
                             paddingValues = paddingValues,
-//                        onCategoryClick = { navController.navigate(it) }
                         )
                     }
                     composable<HomepageScreen> {

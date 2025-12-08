@@ -1,5 +1,6 @@
 package one.vitaliy.whatscooking.categories.list
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,19 +8,25 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import kotlinx.serialization.Serializable
 import one.vitaliy.whatscooking.categories.CategoriesViewModel
+import one.vitaliy.whatscooking.categories.CategoryUiState
+import one.vitaliy.whatscooking.ui.Strings
+import one.vitaliy.whatscooking.ui.theme.WhatsCookingTheme
 import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
@@ -33,20 +40,48 @@ fun CategoriesPage(
 ) {
     val viewModel = koinViewModel<CategoriesViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    AnimatedContent(
+        targetState = uiState,
+        modifier = modifier.fillMaxSize().padding(paddingValues),
+    ) { state ->
+        when (state) {
+            is CategoryUiState.Loading -> CircularProgressIndicator(
+                modifier = Modifier.fillMaxSize().wrapContentSize(),
+            )
+
+            is CategoryUiState.Content -> CategoriesContent(
+                state = state,
+                onCategoryClick = onCategoryClick,
+            )
+
+            is CategoryUiState.Error -> CategoriesError(
+                throwable = state.throwable,
+                onRetry = viewModel::refresh,
+            )
+        }
+    }
+}
+
+@Composable
+private fun CategoriesContent(
+    state: CategoryUiState.Content,
+    onCategoryClick: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     LazyColumn(
         modifier = modifier.fillMaxSize().padding(horizontal = 16.dp),
-        contentPadding = paddingValues,
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        items(items = uiState?.categories.orEmpty(), key = { it.idCategory.orEmpty() }) {
+        items(items = state.categories, key = { it.idCategory.orEmpty() }) { category ->
             CategoryItem(
-                categoryName = it.strCategory.orEmpty(),
-                categoryImage = it.strCategoryThumb.orEmpty(),
-                description = it.strCategoryDescription.orEmpty(),
+                categoryName = category.strCategory.orEmpty(),
+                categoryImage = category.strCategoryThumb.orEmpty(),
+                description = category.strCategoryDescription.orEmpty(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable(
-                        onClick = { onCategoryClick(it.idCategory.orEmpty()) },
+                        onClick = { onCategoryClick(category.idCategory.orEmpty()) },
                     ),
             )
         }
@@ -61,12 +96,46 @@ private fun CategoryItem(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.padding(vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Text(text = categoryName, style = MaterialTheme.typography.headlineMedium)
-        AsyncImage(model = categoryImage, contentDescription = null)
-        Text(text = description, style = MaterialTheme.typography.bodyMedium)
+        Text(
+            text = categoryName,
+            style = WhatsCookingTheme.typography.headline.medium,
+        )
+        AsyncImage(
+            model = categoryImage,
+            contentDescription = categoryName,
+        )
+        Text(
+            text = description,
+            style = WhatsCookingTheme.typography.body.medium,
+        )
+    }
+}
+
+@Composable
+private fun CategoriesError(
+    throwable: Throwable,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxSize().padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = "${Strings.ERROR_GENERIC}\n${throwable.message}",
+            style = WhatsCookingTheme.typography.body.medium,
+            textAlign = TextAlign.Center,
+        )
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = onRetry,
+        ) {
+            Text(Strings.ERROR_RETRY)
+        }
     }
 }

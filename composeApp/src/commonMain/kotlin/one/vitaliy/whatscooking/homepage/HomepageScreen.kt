@@ -32,6 +32,7 @@ import coil3.compose.AsyncImage
 import kotlinx.serialization.Serializable
 import one.vitaliy.whatscooking.compose.PreviewTheme
 import one.vitaliy.whatscooking.networking.Meal
+import one.vitaliy.whatscooking.ui.Strings
 import one.vitaliy.whatscooking.ui.theme.WhatsCookingTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameter
@@ -111,7 +112,7 @@ private fun RecentlyAddedRow(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
-            text = "Recently added recipes",
+            text = Strings.HOMEPAGE_RECENTLY_ADDED,
             style = WhatsCookingTheme.typography.headline.medium,
             modifier = Modifier.padding(horizontal = 16.dp),
         )
@@ -186,13 +187,16 @@ private fun HomepageError(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        // FIXME: Add a proper error screen
-        Text("Ooops, something went wrong!\n${uiState.throwable.message}")
+        Text(
+            text = "${Strings.ERROR_GENERIC}\n${uiState.throwable.message}",
+            style = WhatsCookingTheme.typography.body.medium,
+            textAlign = TextAlign.Center,
+        )
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = onRefreshClick,
         ) {
-            Text("Retry")
+            Text(Strings.ERROR_RETRY)
         }
     }
 }

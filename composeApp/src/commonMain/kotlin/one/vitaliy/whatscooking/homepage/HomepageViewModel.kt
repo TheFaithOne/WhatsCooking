@@ -9,6 +9,10 @@ import kotlinx.coroutines.launch
 import one.vitaliy.whatscooking.homepage.api.HomepageRepository
 import one.vitaliy.whatscooking.networking.Meal
 
+/**
+ * ViewModel for the Homepage screen.
+ * Manages UI state and data fetching for the main homepage content.
+ */
 class HomepageViewModel(
     private val homepageRepository: HomepageRepository,
 ) : ViewModel() {
@@ -20,24 +24,34 @@ class HomepageViewModel(
         fetchLatestMeals()
     }
 
+    /**
+     * Fetches the latest meals from the repository.
+     */
     private fun fetchLatestMeals() {
         viewModelScope.launch {
+            _uiState.value = HomepageUiState.Loading
             runCatching {
                 homepageRepository.getLatestMeals()
-            }.onSuccess {
-                _uiState.value = HomepageUiState.Content(it.meals.orEmpty())
-            }.onFailure {
-                Napier.e { "Failed to fetch latest meals $it" }
-                _uiState.value = HomepageUiState.Error(it)
+            }.onSuccess { response ->
+                _uiState.value = HomepageUiState.Content(response.meals.orEmpty())
+            }.onFailure { throwable ->
+                Napier.e(throwable) { "Failed to fetch latest meals" }
+                _uiState.value = HomepageUiState.Error(throwable)
             }
         }
     }
 
+    /**
+     * Refreshes the homepage content by re-fetching the latest meals.
+     */
     fun refresh() {
         fetchLatestMeals()
     }
 }
 
+/**
+ * UI state for the Homepage screen.
+ */
 sealed interface HomepageUiState {
     data class Content(val latestMeals: List<Meal>) : HomepageUiState
     data object Loading : HomepageUiState
