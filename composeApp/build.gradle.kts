@@ -1,4 +1,6 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -6,7 +8,17 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.buildkonfig)
 }
+
+// Read API key from local.properties
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { load(it) }
+    }
+}
+val mealDbApiKey: String = localProperties.getProperty("MEAL_DB_API_KEY", "")
 
 kotlin {
     androidTarget {
@@ -90,4 +102,14 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+}
+
+// BuildKonfig configuration for generating BuildConfig
+buildkonfig {
+    packageName = "one.vitaliy.whatscooking"
+
+    // Default config
+    defaultConfigs {
+        buildConfigField(STRING, "MEAL_DB_API_KEY", mealDbApiKey)
+    }
 }

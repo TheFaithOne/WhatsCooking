@@ -74,6 +74,12 @@ composeApp/src/
 
 ## Build and Run
 
+**You will need** to provide an API key to build this application. You can use test key "1" and 
+update the version of the API to v1 if you don't have any
+
+MEAL_DB_API_KEY=your_api_key_here
+
+
 ### Android Application
 
 Build and run the Android app from the terminal:
