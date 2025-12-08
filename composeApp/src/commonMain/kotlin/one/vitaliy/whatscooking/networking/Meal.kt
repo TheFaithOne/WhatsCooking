@@ -3,6 +3,10 @@ package one.vitaliy.whatscooking.networking
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/**
+ * Represents a meal with all its details.
+ * Contains information about ingredients, instructions, and metadata.
+ */
 @Serializable
 data class Meal(
     @SerialName("dateModified")

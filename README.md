@@ -1,35 +1,126 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# What's Cooking 🍳
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+A modern Kotlin Multiplatform application that showcases recipes and meals from around the world
+using TheMealDB API.
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+## Features
 
-### Build and Run Android Application
+- 📱 **Cross-platform**: Runs on both Android and iOS
+- 🎨 **Modern UI**: Built with Jetpack Compose Multiplatform
+- 🏗️ **Clean Architecture**: Follows CLEAN principles with clear separation of concerns
+- 🔄 **Reactive**: Uses Kotlin Flows for reactive data management
+- 💉 **Dependency Injection**: Powered by Koin
+- 🌐 **Networking**: Ktor client for API communication
+- 🖼️ **Image Loading**: Coil for efficient image loading and caching
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+## Architecture
 
-### Build and Run iOS Application
+The app follows Clean Architecture principles with clear separation between layers:
 
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
+### Layers
+
+- **Presentation Layer** (`ui/`)
+    - ViewModels manage UI state and business logic
+    - Composable screens handle UI rendering
+    - Each feature has its own ViewModel and UI state
+
+- **Domain Layer** (Repositories)
+    - Repository pattern abstracts data sources
+    - Provides clean API for ViewModels
+    - Handles data transformation
+
+- **Data Layer** (`networking/`, `api/`)
+    - API services handle network communication
+    - DTOs for API responses
+    - Network error handling
+
+### Key Components
+
+- **Dependency Injection**: Koin modules organize dependencies by feature
+- **Navigation**: Type-safe navigation with Compose Navigation
+- **State Management**: Sealed interfaces for UI states (Loading, Content, Error)
+- **Error Handling**: Consistent error handling with proper logging
+
+## Project Structure
+
+```
+composeApp/src/
+├── commonMain/kotlin/one/vitaliy/whatscooking/
+│   ├── categories/          # Categories feature
+│   │   ├── api/            # API models
+│   │   ├── detail/         # Category detail screen
+│   │   └── list/           # Categories list screen
+│   ├── di/                 # Dependency injection modules
+│   ├── homepage/           # Homepage feature
+│   │   └── api/           # Homepage repository
+│   ├── mealdetail/         # Meal detail feature
+│   ├── networking/         # Network layer
+│   ├── randommeal/         # Random meal feature
+│   └── ui/                 # Shared UI components and theme
+├── androidMain/            # Android-specific code
+└── iosMain/                # iOS-specific code
+```
+
+## Tech Stack
+
+- **Kotlin Multiplatform**: Share code across platforms
+- **Jetpack Compose Multiplatform**: Modern declarative UI
+- **Ktor**: HTTP client for API calls
+- **Kotlinx Serialization**: JSON parsing
+- **Koin**: Dependency injection
+- **Coil**: Image loading
+- **Navigation Compose**: Type-safe navigation
+- **Napier**: Multiplatform logging
+
+## Build and Run
+
+### Android Application
+
+Build and run the Android app from the terminal:
+
+**macOS/Linux:**
+
+```shell
+./gradlew :composeApp:assembleDebug
+```
+
+**Windows:**
+
+```shell
+.\gradlew.bat :composeApp:assembleDebug
+```
+
+Or use the run configuration from your IDE's toolbar.
+
+### iOS Application
+
+Open the `/iosApp` directory in Xcode and run the project, or use the run configuration from your
+IDE's toolbar.
+
+## API
+
+This app uses [TheMealDB API](https://www.themealdb.com/api.php) to fetch recipe data.
+
+## Code Quality
+
+- ✅ CLEAN Architecture principles
+- ✅ Comprehensive KDoc documentation
+- ✅ Consistent error handling
+- ✅ Centralized string resources
+- ✅ Type-safe navigation
+- ✅ Proper separation of concerns
+- ✅ Repository pattern for data access
+
+## Future Improvements
+
+- Add local caching with SQLDelight
+- Implement search functionality
+- Add favorites feature
+- Implement offline support
+- Add unit and UI tests
+- Localization support
 
 ---
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+Learn more
+about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)

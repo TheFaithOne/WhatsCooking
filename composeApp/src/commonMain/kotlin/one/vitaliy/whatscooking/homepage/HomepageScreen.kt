@@ -32,11 +32,17 @@ import coil3.compose.AsyncImage
 import kotlinx.serialization.Serializable
 import one.vitaliy.whatscooking.compose.PreviewTheme
 import one.vitaliy.whatscooking.networking.Meal
+
 import one.vitaliy.whatscooking.ui.theme.WhatsCookingTheme
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameter
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 import org.koin.compose.viewmodel.koinViewModel
+import whatscooking.composeapp.generated.resources.Res
+import whatscooking.composeapp.generated.resources.error_generic
+import whatscooking.composeapp.generated.resources.error_retry
+import whatscooking.composeapp.generated.resources.homepage_recently_added_recipes
 
 @Serializable
 object HomepageScreen
@@ -111,7 +117,7 @@ private fun RecentlyAddedRow(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
-            text = "Recently added recipes",
+            text = stringResource(Res.string.homepage_recently_added_recipes),
             style = WhatsCookingTheme.typography.headline.medium,
             modifier = Modifier.padding(horizontal = 16.dp),
         )
@@ -186,13 +192,16 @@ private fun HomepageError(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        // FIXME: Add a proper error screen
-        Text("Ooops, something went wrong!\n${uiState.throwable.message}")
+        Text(
+            text = stringResource(Res.string.error_generic, uiState.throwable.message.orEmpty()),
+            style = WhatsCookingTheme.typography.body.medium,
+            textAlign = TextAlign.Center,
+        )
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = onRefreshClick,
         ) {
-            Text("Retry")
+            Text(stringResource(Res.string.error_retry))
         }
     }
 }
