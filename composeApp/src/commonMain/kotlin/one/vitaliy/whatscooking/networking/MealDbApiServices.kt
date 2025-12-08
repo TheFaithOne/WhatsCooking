@@ -9,6 +9,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import one.vitaliy.whatscooking.BuildKonfig
 import one.vitaliy.whatscooking.categories.api.CategoriesResponse
 
 /**
@@ -18,8 +19,8 @@ import one.vitaliy.whatscooking.categories.api.CategoriesResponse
 class MealDbApiServices {
     private val baseUrl = "https://www.themealdb.com/api/json/v2/"
 
-    // Note: In production, this should be stored securely (e.g., BuildConfig, environment variables)
-    private val apiKey = "65232507"
+    // API key is now loaded from BuildKonfig, which reads from local.properties at build time
+    private val apiKey = BuildKonfig.MEAL_DB_API_KEY
 
     private val json = Json {
         coerceInputValues = true
