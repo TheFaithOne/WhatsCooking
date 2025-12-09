@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import one.vitaliy.whatscooking.bottommenu.NavigationBar
 import one.vitaliy.whatscooking.categories.list.CategoriesPage
 import one.vitaliy.whatscooking.di.initKoin
 import one.vitaliy.whatscooking.homepage.HomepageScreen
@@ -20,9 +21,13 @@ fun App() {
     KoinApplication(
         application = { initKoin() },
     ) {
+        val navController = rememberNavController()
         WhatsCookingTheme {
-            Scaffold { paddingValues ->
-                val navController = rememberNavController()
+            Scaffold(
+                bottomBar = {
+                    NavigationBar(navController)
+                },
+            ) { paddingValues ->
                 NavHost(navController = navController, startDestination = HomepageScreen) {
                     composable<RandomMealScreen> {
                         RandomMealScreen(
