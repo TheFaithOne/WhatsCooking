@@ -52,7 +52,7 @@ class HomepageViewModel(
         fetchLatestMeals()
     }
 
-    fun addMealToFavourites(mealDto: MealDto) {
+    fun addMealToFavourites(mealDto: MealDomain) {
         viewModelScope.launch {
             val result = addToFavourites(mealDto)
             when (result) {

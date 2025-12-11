@@ -1,12 +1,13 @@
 package one.vitaliy.whatscooking.usecases
 
 import io.github.aakira.napier.Napier
+import one.vitaliy.whatscooking.data.MealDomain
 import one.vitaliy.whatscooking.db.FavouriteMealDao
 import one.vitaliy.whatscooking.db.FavouriteMealEntity
 import one.vitaliy.whatscooking.networking.MealDto
 
 class AddToFavouritesUseCase(private val mealDao: FavouriteMealDao) {
-    suspend operator fun invoke(mealDto: MealDto): AddToFavouritesResult {
+    suspend operator fun invoke(mealDto: MealDomain): AddToFavouritesResult {
         return runCatching {
             val totalCount = mealDao.getFavouriteMealCount()
             if (totalCount >= 5) {
@@ -14,9 +15,9 @@ class AddToFavouritesUseCase(private val mealDao: FavouriteMealDao) {
             } else {
                 mealDao.insertFavouriteMeal(
                     FavouriteMealEntity(
-                        id = mealDto.id.orEmpty(),
-                        name = mealDto.name.orEmpty(),
-                        region = mealDto.areaOfOrigin.orEmpty(),
+                        id = mealDto.id,
+                        name = mealDto.name,
+                        region = mealDto.origin.orEmpty(),
                     )
                 )
                 AddToFavouritesResult.Success
