@@ -21,6 +21,9 @@ interface FavouriteMealDao {
     @Query("SELECT * FROM favourite_meal WHERE id = :id")
     suspend fun getFavouriteMeal(id: String): FavouriteMealEntity?
 
+    @Query("SELECT COUNT(*) FROM favourite_meal")
+    suspend fun getFavouriteMealCount(): Int
+
     @Delete
     suspend fun clearFavouriteMeals(favouriteMeal: FavouriteMealEntity)
 }

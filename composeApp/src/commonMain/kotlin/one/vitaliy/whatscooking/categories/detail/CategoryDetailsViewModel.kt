@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import one.vitaliy.whatscooking.categories.CategoriesRepository
-import one.vitaliy.whatscooking.networking.Meal
+import one.vitaliy.whatscooking.networking.MealDto
 
 /**
  * ViewModel for the Category Details screen.
@@ -52,7 +52,7 @@ class CategoryDetailsViewModel(
  * UI state for the Category Details screen.
  */
 sealed interface CategoryDetailsUiState {
-    data class Content(val meals: List<Meal>) : CategoryDetailsUiState
+    data class Content(val mealDtos: List<MealDto>) : CategoryDetailsUiState
     data object Loading : CategoryDetailsUiState
     data class Error(val throwable: Throwable) : CategoryDetailsUiState
 }

@@ -31,8 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import kotlinx.serialization.Serializable
 import one.vitaliy.whatscooking.compose.PreviewTheme
-import one.vitaliy.whatscooking.networking.Meal
-
+import one.vitaliy.whatscooking.data.MealDomain
 import one.vitaliy.whatscooking.ui.theme.WhatsCookingTheme
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -108,7 +107,7 @@ private fun HomepageContent(
 
 @Composable
 private fun RecentlyAddedRow(
-    recentlyAdded: List<Meal>,
+    recentlyAdded: List<MealDomain>,
     onMealClicked: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -126,7 +125,7 @@ private fun RecentlyAddedRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth(),
         ) {
-            items(items = recentlyAdded, key = { it.id.orEmpty() }) {
+            items(items = recentlyAdded, key = { it.id }) {
                 MealCard(it, modifier = Modifier.animateItem(), onMealClicked = onMealClicked)
             }
         }
@@ -135,14 +134,14 @@ private fun RecentlyAddedRow(
 
 @Composable
 private fun MealCard(
-    meal: Meal,
+    meal: MealDomain,
     onMealClicked: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(8.dp),
-        onClick = { onMealClicked(meal.id.orEmpty()) },
+        onClick = { onMealClicked(meal.id) },
     ) {
         Column(
             modifier = Modifier.padding(bottom = 16.dp),
@@ -150,12 +149,12 @@ private fun MealCard(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             AsyncImage(
-                model = meal.imageUrl,
+                model = meal.thumbnailUrl,
                 contentDescription = meal.name,
                 contentScale = ContentScale.Crop,
             )
             Text(
-                text = "${meal.name}",
+                text = meal.name,
                 style = WhatsCookingTheme.typography.body.medium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
@@ -166,13 +165,13 @@ private fun MealCard(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
             ) {
                 Text(
-                    text = "${meal.areaOfOrigin}",
+                    text = meal.origin.orEmpty(),
                     style = WhatsCookingTheme.typography.label.medium,
                     textAlign = TextAlign.Center,
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
-                    text = "${meal.category}",
+                    text = meal.category.orEmpty(),
                     style = WhatsCookingTheme.typography.label.medium,
                     textAlign = TextAlign.Center,
                 )
@@ -221,47 +220,50 @@ private class HomepagePreviewProvider : PreviewParameterProvider<HomepageUiState
         HomepageUiState.Loading,
         HomepageUiState.Content(
             listOf(
-                Meal(
+                MealDomain(
                     id = "52940",
                     name = "Brown Stew Chicken",
                     category = "Chicken",
-                    areaOfOrigin = "Jamaican",
-                    imageUrl = "https://www.themealdb.com/images/media/meals/sypxpx1515365095.jpg",
-                    strIngredient1 = "Chicken",
-                    strIngredient2 = "Tomato",
-                    strIngredient3 = "Onions",
-                    strMeasure1 = "1 whole",
-                    strMeasure2 = "2 chopped",
-                    strMeasure3 = "2 sliced",
+                    origin = "Jamaican",
+                    thumbnailUrl = "https://www.themealdb.com/images/media/meals/sypxpx1515365095.jpg",
+                    youtubeUrl = null,
                     instructions = "Prepare the chicken by cutting it into pieces...",
+                    ingredientsWithMeasures = mapOf(
+                        "Chicken" to "1 whole",
+                        "Tomato" to "2 chopped",
+                        "Onions" to "2 sliced"
+                    ),
+                    isFavourite = false
                 ),
-                Meal(
+                MealDomain(
                     id = "52772",
                     name = "Teriyaki Chicken Casserole",
                     category = "Chicken",
-                    areaOfOrigin = "Japanese",
-                    imageUrl = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg",
-                    strIngredient1 = "Chicken",
-                    strIngredient2 = "Soy Sauce",
-                    strIngredient3 = "Ginger",
-                    strMeasure1 = "750g",
-                    strMeasure2 = "3 tbsp",
-                    strMeasure3 = "1 tsp",
+                    origin = "Japanese",
+                    thumbnailUrl = "https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg",
+                    youtubeUrl = null,
                     instructions = "Mix the soy sauce, ginger and garlic...",
+                    ingredientsWithMeasures = mapOf(
+                        "Chicken" to "750g",
+                        "Soy Sauce" to "3 tbsp",
+                        "Ginger" to "1 tsp"
+                    ),
+                    isFavourite = false
                 ),
-                Meal(
+                MealDomain(
                     id = "52804",
                     name = "Poutine",
                     category = "Miscellaneous",
-                    areaOfOrigin = "Canadian",
-                    imageUrl = "https://www.themealdb.com/images/media/meals/uuyrrx1487327597.jpg",
-                    strIngredient1 = "Fries",
-                    strIngredient2 = "Cheese Curds",
-                    strIngredient3 = "Gravy",
-                    strMeasure1 = "500g",
-                    strMeasure2 = "200g",
-                    strMeasure3 = "200ml",
+                    origin = "Canadian",
+                    thumbnailUrl = "https://www.themealdb.com/images/media/meals/uuyrrx1487327597.jpg",
+                    youtubeUrl = null,
                     instructions = "Heat the fries until crispy...",
+                    ingredientsWithMeasures = mapOf(
+                        "Fries" to "500g",
+                        "Cheese Curds" to "200g",
+                        "Gravy" to "200ml"
+                    ),
+                    isFavourite = false
                 ),
             ),
         ),

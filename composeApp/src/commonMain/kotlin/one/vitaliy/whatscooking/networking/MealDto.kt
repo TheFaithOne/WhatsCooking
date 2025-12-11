@@ -2,13 +2,14 @@ package one.vitaliy.whatscooking.networking
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import one.vitaliy.whatscooking.data.MealDomain
 
 /**
  * Represents a meal with all its details.
  * Contains information about ingredients, instructions, and metadata.
  */
 @Serializable
-data class Meal(
+data class MealDto(
     @SerialName("dateModified")
     val dateModified: String? = null,
     @SerialName("idMeal")
@@ -120,6 +121,7 @@ data class Meal(
      * Returns a map of ingredients to their measures.
      * Only includes non-null and non-blank ingredient-measure pairs.
      */
+    // FIXME: refactor this
     fun getIngredientsWithMeasures(): Map<String, String> {
         val ingredientsMap = mutableMapOf<String, String>()
 
@@ -145,4 +147,17 @@ data class Meal(
 
         return ingredientsMap
     }
+}
+
+fun MealDto.toDomain(): MealDomain = with(this) {
+    MealDomain(
+        id = id.orEmpty(),
+        name = name.orEmpty(),
+        category = category.orEmpty(),
+        origin = areaOfOrigin,
+        instructions = instructions.orEmpty(),
+        thumbnailUrl = imageUrl,
+        youtubeUrl = youtubeUrl,
+        ingredientsWithMeasures = getIngredientsWithMeasures(),
+    )
 }

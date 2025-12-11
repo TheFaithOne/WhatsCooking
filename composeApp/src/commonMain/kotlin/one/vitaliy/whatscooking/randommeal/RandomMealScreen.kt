@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import kotlinx.serialization.Serializable
-import one.vitaliy.whatscooking.networking.Meal
+import one.vitaliy.whatscooking.networking.MealDto
 import one.vitaliy.whatscooking.ui.theme.WhatsCookingTheme
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -51,7 +51,7 @@ internal fun RandomMealScreen(
             )
 
             is RandomMealUiState.Content -> RandomMealContent(
-                meal = state.meal,
+                mealDto = state.mealDto,
                 onNavigateToCategories = onNavigateToCategories,
             )
 
@@ -65,7 +65,7 @@ internal fun RandomMealScreen(
 
 @Composable
 private fun RandomMealContent(
-    meal: Meal,
+    mealDto: MealDto,
     onNavigateToCategories: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -74,19 +74,19 @@ private fun RandomMealContent(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         AsyncImage(
-            model = meal.imageUrl,
-            contentDescription = meal.name,
+            model = mealDto.imageUrl,
+            contentDescription = mealDto.name,
             modifier = Modifier.fillMaxWidth(),
         )
         Text(
-            text = meal.name.orEmpty(),
+            text = mealDto.name.orEmpty(),
             style = WhatsCookingTheme.typography.headline.medium,
         )
         Text(
-            text = meal.tags.orEmpty(),
+            text = mealDto.tags.orEmpty(),
             style = WhatsCookingTheme.typography.body.medium,
         )
-        meal.getIngredientsWithMeasures().forEach { (ingredient, measure) ->
+        mealDto.getIngredientsWithMeasures().forEach { (ingredient, measure) ->
             Text(
                 text = "• $ingredient: $measure",
                 style = WhatsCookingTheme.typography.body.medium,
