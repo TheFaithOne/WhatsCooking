@@ -6,7 +6,7 @@ import one.vitaliy.whatscooking.homepage.api.HomepageRepositoryImpl
 import one.vitaliy.whatscooking.mealdetail.MealDetailRepository
 import one.vitaliy.whatscooking.networking.MealDbApiServices
 import one.vitaliy.whatscooking.randommeal.RandomMealRepository
-import one.vitaliy.whatscooking.usecases.AddToFavouritesUseCase
+import one.vitaliy.whatscooking.usecases.ToggleFavouriteMealUseCase
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -24,5 +24,5 @@ val dataModule = module {
     single { HomepageRepositoryImpl(get(), get()) } binds arrayOf(HomepageRepository::class)
     singleOf(::RandomMealRepository)
     singleOf(::MealDetailRepository)
-    factoryOf(::AddToFavouritesUseCase)
+    factoryOf(::ToggleFavouriteMealUseCase)
 }
