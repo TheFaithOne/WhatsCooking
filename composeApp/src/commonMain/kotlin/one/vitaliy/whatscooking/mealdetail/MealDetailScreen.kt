@@ -29,7 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import kotlinx.serialization.Serializable
 import one.vitaliy.whatscooking.compose.PreviewTheme
-import one.vitaliy.whatscooking.networking.Meal
+import one.vitaliy.whatscooking.networking.MealDto
 import one.vitaliy.whatscooking.ui.theme.WhatsCookingTheme
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -89,26 +89,26 @@ private fun MealDetailContent(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         AsyncImage(
-            model = uiState.meal.imageUrl,
-            contentDescription = uiState.meal.name,
+            model = uiState.mealDto.imageUrl,
+            contentDescription = uiState.mealDto.name,
             contentScale = ContentScale.FillWidth,
             modifier = Modifier.fillMaxWidth(),
         )
         Text(
-            text = uiState.meal.name.orEmpty(),
+            text = uiState.mealDto.name.orEmpty(),
             style = WhatsCookingTheme.typography.headline.medium,
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         )
-        MealDetails(uiState.meal, modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp))
+        MealDetails(uiState.mealDto, modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp))
         Text(
-            text = uiState.meal.instructions.orEmpty(),
+            text = uiState.mealDto.instructions.orEmpty(),
             style = WhatsCookingTheme.typography.body.medium,
         )
-        if (!uiState.meal.youtubeUrl.isNullOrBlank()) {
+        if (!uiState.mealDto.youtubeUrl.isNullOrBlank()) {
             val uriHandler = LocalUriHandler.current
             Button(
                 onClick = {
-                    uriHandler.openUri(uiState.meal.youtubeUrl)
+                    uriHandler.openUri(uiState.mealDto.youtubeUrl)
                 },
             ) {
                 Text(
@@ -122,7 +122,7 @@ private fun MealDetailContent(
 
 @Composable
 private fun MealDetails(
-    meal: Meal,
+    mealDto: MealDto,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -131,16 +131,16 @@ private fun MealDetails(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Text(
-                text = meal.tags.orEmpty(),
+                text = mealDto.tags.orEmpty(),
                 style = WhatsCookingTheme.typography.body.medium,
             )
             Text(
-                text = meal.areaOfOrigin.orEmpty(),
+                text = mealDto.areaOfOrigin.orEmpty(),
                 style = WhatsCookingTheme.typography.body.medium,
             )
         }
         Spacer(Modifier.height(16.dp))
-        meal.getIngredientsWithMeasures().forEach { (ingredient, measure) ->
+        mealDto.getIngredientsWithMeasures().forEach { (ingredient, measure) ->
             Text(
                 text = "• $ingredient: $measure",
                 style = WhatsCookingTheme.typography.body.medium,

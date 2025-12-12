@@ -10,5 +10,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MealsResponse(
     @SerialName("meals")
-    val meals: List<Meal>?,
+    val meals: List<MealDto>?,
 )

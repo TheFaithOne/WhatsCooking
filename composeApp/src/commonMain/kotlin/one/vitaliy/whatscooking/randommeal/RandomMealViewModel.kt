@@ -6,7 +6,7 @@ import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import one.vitaliy.whatscooking.networking.Meal
+import one.vitaliy.whatscooking.networking.MealDto
 
 /**
  * ViewModel for the Random Meal screen.
@@ -50,7 +50,7 @@ class RandomMealViewModel(
  * UI state for the Random Meal screen.
  */
 sealed interface RandomMealUiState {
-    data class Content(val meal: Meal) : RandomMealUiState
+    data class Content(val mealDto: MealDto) : RandomMealUiState
     data object Loading : RandomMealUiState
     data class Error(val throwable: Throwable) : RandomMealUiState
 }
