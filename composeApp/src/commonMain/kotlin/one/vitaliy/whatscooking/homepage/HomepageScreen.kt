@@ -202,9 +202,9 @@ private class HomepagePreviewProvider : PreviewParameterProvider<HomepageUiState
                     ingredientsWithMeasures = mapOf(
                         "Chicken" to "1 whole",
                         "Tomato" to "2 chopped",
-                        "Onions" to "2 sliced"
+                        "Onions" to "2 sliced",
                     ),
-                    isFavourite = false
+                    isFavourite = false,
                 ),
                 MealDomain(
                     id = "52772",
@@ -217,9 +217,9 @@ private class HomepagePreviewProvider : PreviewParameterProvider<HomepageUiState
                     ingredientsWithMeasures = mapOf(
                         "Chicken" to "750g",
                         "Soy Sauce" to "3 tbsp",
-                        "Ginger" to "1 tsp"
+                        "Ginger" to "1 tsp",
                     ),
-                    isFavourite = false
+                    isFavourite = false,
                 ),
                 MealDomain(
                     id = "52804",
@@ -232,9 +232,9 @@ private class HomepagePreviewProvider : PreviewParameterProvider<HomepageUiState
                     ingredientsWithMeasures = mapOf(
                         "Fries" to "500g",
                         "Cheese Curds" to "200g",
-                        "Gravy" to "200ml"
+                        "Gravy" to "200ml",
                     ),
-                    isFavourite = false
+                    isFavourite = false,
                 ),
             ),
         ),

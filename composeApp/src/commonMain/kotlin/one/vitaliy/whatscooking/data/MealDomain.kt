@@ -9,5 +9,5 @@ data class MealDomain(
     val category: String?,
     val origin: String?,
     val ingredientsWithMeasures: Map<String, String>,
-    val isFavourite: Boolean = false
+    val isFavourite: Boolean = false,
 )

@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.flowOf
 import one.vitaliy.whatscooking.data.MealDomain
 import one.vitaliy.whatscooking.db.FavouriteMealDao
 import one.vitaliy.whatscooking.networking.MealDbApiServices
-import one.vitaliy.whatscooking.networking.MealsResponse
 import one.vitaliy.whatscooking.networking.toDomain
 
 interface HomepageRepository {
@@ -23,7 +22,7 @@ class HomepageRepositoryImpl(
 ) : HomepageRepository {
     override suspend fun getLatestMeals(): Flow<List<MealDomain>> = combine(
         favouriteMealDao.getAllFavouriteMeals(),
-        flowOf(apiServices.getLatestMeals())
+        flowOf(apiServices.getLatestMeals()),
     ) { favourites, mealsResponse ->
         val idsOfFavourites = favourites.map { it.id }
         mealsResponse.meals?.map {

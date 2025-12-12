@@ -1,16 +1,13 @@
 package one.vitaliy.whatscooking.ui.composables
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,8 +27,6 @@ import org.jetbrains.compose.ui.tooling.preview.PreviewParameter
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 import whatscooking.composeapp.generated.resources.Res
 import whatscooking.composeapp.generated.resources.ic_chef_hat
-import whatscooking.composeapp.generated.resources.ic_favourite_filled
-import whatscooking.composeapp.generated.resources.ic_favourite_outline
 import whatscooking.composeapp.generated.resources.ingredient_count
 
 @Composable
@@ -81,7 +76,7 @@ fun MealCard(
                             Res.string.ingredient_count,
                             meal.ingredientsWithMeasures.keys.size,
                         ),
-                        style = WhatsCookingTheme.typography.label.small
+                        style = WhatsCookingTheme.typography.label.small,
                     )
                 }
             }
@@ -97,7 +92,7 @@ fun MealCard(
 @Preview
 @Composable
 private fun MealCardPreview(
-    @PreviewParameter(MealPreviewProvider::class) meal: MealDomain
+    @PreviewParameter(MealPreviewProvider::class) meal: MealDomain,
 ) {
     PreviewTheme {
         MealCard(

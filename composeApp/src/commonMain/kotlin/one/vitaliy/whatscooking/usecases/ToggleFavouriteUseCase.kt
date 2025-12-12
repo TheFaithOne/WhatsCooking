@@ -22,7 +22,7 @@ class ToggleFavouriteMealUseCase(private val dao: FavouriteMealDao) {
                             id = meal.id,
                             name = meal.name,
                             region = meal.origin.orEmpty(),
-                        )
+                        ),
                     )
                     AddToFavouritesResult.AddSuccess
                 }

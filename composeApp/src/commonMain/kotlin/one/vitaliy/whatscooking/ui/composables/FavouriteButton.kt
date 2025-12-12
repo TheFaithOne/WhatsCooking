@@ -32,13 +32,13 @@ fun FavouriteButton(
                     Res.drawable.ic_favourite_filled
                 } else {
                     Res.drawable.ic_favourite_outline
-                }
+                },
             ),
             contentDescription = stringResource(Res.string.toggle_favourite_content_description),
             modifier = Modifier.background(
                 color = WhatsCookingTheme.colors.background.card,
-                shape = CircleShape
-            ).padding(4.dp)
+                shape = CircleShape,
+            ).padding(4.dp),
         )
     }
 }
