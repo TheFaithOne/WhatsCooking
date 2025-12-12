@@ -19,4 +19,7 @@
     <string name="error_retry">Retry</string>
 
     <string name="ingredient_count">%1$d ingredients</string>
+
+    <!--Region content description-->
+    <string name="toggle_favourite_content_description">Toggle favourite meal</string>
 </resources>

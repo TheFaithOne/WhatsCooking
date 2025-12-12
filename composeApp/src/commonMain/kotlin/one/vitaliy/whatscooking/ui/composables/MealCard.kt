@@ -85,26 +85,11 @@ fun MealCard(
                     )
                 }
             }
-            IconButton(
-                onClick = { onAddToFavouriteCLick(meal) },
-                modifier = Modifier.align(Alignment.TopEnd)
-            ) {
-                Icon(
-                    painterResource(
-                        resource = if (meal.isFavourite) {
-                            Res.drawable.ic_favourite_filled
-                        } else {
-                            Res.drawable.ic_favourite_outline
-                        }
-                    ),
-                    // FIXME: Add proper contentDescription
-                    contentDescription = null,
-                    modifier = Modifier.background(
-                        color = WhatsCookingTheme.colors.background.card,
-                        shape = CircleShape
-                    ).padding(4.dp)
-                )
-            }
+            FavouriteButton(
+                modifier = Modifier.align(Alignment.TopEnd),
+                onAddToFavouriteClick = { onAddToFavouriteCLick(meal) },
+                isFavourite = meal.isFavourite,
+            )
         }
     }
 }
