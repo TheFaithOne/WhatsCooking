@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import one.vitaliy.whatscooking.data.MealDomain
 import one.vitaliy.whatscooking.homepage.api.HomepageRepository
@@ -34,8 +36,16 @@ class HomepageViewModel(
         viewModelScope.launch {
             _uiState.value = HomepageUiState.Loading
             runCatching {
-                homepageRepository.getLatestMeals().collect { meals ->
-                    _uiState.value = HomepageUiState.Content(meals)
+                combine(
+                    homepageRepository.getLatestMeals(),
+                    homepageRepository.getFavouriteMeals(),
+                ) { latest, favourites ->
+                    HomepageUiState.Content(
+                        latestMeals = latest,
+                        favouriteMeals = favourites,
+                    )
+                }.collectLatest {
+                    _uiState.value = it
                 }
             }.onFailure { throwable ->
                 Napier.e(throwable) { "Failed to fetch latest meals" }
@@ -68,7 +78,11 @@ class HomepageViewModel(
  * UI state for the Homepage screen.
  */
 sealed interface HomepageUiState {
-    data class Content(val latestMeals: List<MealDomain>) : HomepageUiState
+    data class Content(
+        val latestMeals: List<MealDomain>,
+        val favouriteMeals: List<MealDomain> = emptyList(),
+    ) : HomepageUiState
+
     data object Loading : HomepageUiState
     data class Error(val throwable: Throwable) : HomepageUiState
 }

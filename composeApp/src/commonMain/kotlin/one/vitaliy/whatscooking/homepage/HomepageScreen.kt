@@ -1,6 +1,7 @@
 package one.vitaliy.whatscooking.homepage
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -35,6 +36,8 @@ import org.koin.compose.viewmodel.koinViewModel
 import whatscooking.composeapp.generated.resources.Res
 import whatscooking.composeapp.generated.resources.error_generic
 import whatscooking.composeapp.generated.resources.error_retry
+import whatscooking.composeapp.generated.resources.homepage_favourite_recipes_subtitle
+import whatscooking.composeapp.generated.resources.homepage_favourite_recipes_title
 import whatscooking.composeapp.generated.resources.homepage_recently_added_recipes_subtitle
 import whatscooking.composeapp.generated.resources.homepage_recently_added_recipes_title
 
@@ -109,35 +112,52 @@ private fun HomepageContent(
         modifier = modifier.fillMaxWidth().verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        RecentlyAddedRow(
+        MealsRow(
             recentlyAdded = uiState.latestMeals,
             onMealClicked = onMealClicked,
+            title = stringResource(Res.string.homepage_recently_added_recipes_title),
+            description = stringResource(Res.string.homepage_recently_added_recipes_subtitle),
             onAddToFavouriteCLick = onAddToFavouriteCLick,
         )
+        AnimatedVisibility(uiState.favouriteMeals.isNotEmpty()) {
+            MealsRow(
+                recentlyAdded = uiState.favouriteMeals,
+                onMealClicked = onMealClicked,
+                title = stringResource(Res.string.homepage_favourite_recipes_title),
+                description = stringResource(Res.string.homepage_favourite_recipes_subtitle),
+                onAddToFavouriteCLick = onAddToFavouriteCLick,
+            )
+        }
     }
 }
 
 @Composable
-private fun RecentlyAddedRow(
+private fun MealsRow(
     recentlyAdded: List<MealDomain>,
     onMealClicked: (String) -> Unit,
     onAddToFavouriteCLick: (MealDomain) -> Unit,
+    title: String? = null,
+    description: String? = null,
     modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        Text(
-            text = stringResource(Res.string.homepage_recently_added_recipes_title),
-            style = WhatsCookingTheme.typography.headline.medium,
-            modifier = Modifier.padding(horizontal = 16.dp),
-        )
-        Text(
-            text = stringResource(Res.string.homepage_recently_added_recipes_subtitle),
-            style = WhatsCookingTheme.typography.label.medium,
-            modifier = Modifier.padding(horizontal = 16.dp),
-        )
+        title?.let {
+            Text(
+                text = title,
+                style = WhatsCookingTheme.typography.headline.medium,
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+        }
+        description?.let {
+            Text(
+                text = it,
+                style = WhatsCookingTheme.typography.label.medium,
+                modifier = Modifier.padding(horizontal = 16.dp),
+            )
+        }
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),

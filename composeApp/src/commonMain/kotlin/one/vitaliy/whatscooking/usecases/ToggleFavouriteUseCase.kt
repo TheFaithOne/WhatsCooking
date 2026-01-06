@@ -22,6 +22,9 @@ class ToggleFavouriteMealUseCase(private val dao: FavouriteMealDao) {
                             id = meal.id,
                             name = meal.name,
                             region = meal.origin.orEmpty(),
+                            thumbnailUrl = meal.thumbnailUrl.orEmpty(),
+                            ingredientCount = meal.ingredientsWithMeasures.size,
+                            category = meal.category.orEmpty(),
                         ),
                     )
                     AddToFavouritesResult.AddSuccess

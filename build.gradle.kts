@@ -22,6 +22,7 @@ dependencies {
 
 detekt {
     source.from(files(rootProject.rootDir))
+    config.setFrom(files("${rootProject.rootDir}/config/detekt/detekt.yml"))
     parallel = true
 }
 

@@ -4,7 +4,9 @@
 
     <!-- Homepage Screen -->
     <string name="homepage_recently_added_recipes_title">Recently added</string>
+    <string name="homepage_favourite_recipes_title">Favourite meals</string>
     <string name="homepage_recently_added_recipes_subtitle">Fresh recipes to inspire your next meal</string>
+    <string name="homepage_favourite_recipes_subtitle">Favourite meals to return to</string>
 
     <!-- Meal Detail Screen -->
     <string name="meal_detail_watch_youtube">Watch on YouTube</string>
