@@ -67,19 +67,28 @@ private fun HomepageContainer(
     modifier: Modifier = Modifier,
 ) {
     AnimatedContent(
-        uiState,
+        targetState = uiState,
+        // Use a key based on the state type, not the entire state object
+        // This prevents AnimatedContent from animating when only the list content changes
+        contentKey = { state ->
+            when (state) {
+                is HomepageUiState.Content -> "content"
+                is HomepageUiState.Error -> "error"
+                is HomepageUiState.Loading -> "loading"
+            }
+        },
         modifier = modifier,
-    ) {
-        when (it) {
+    ) { state ->
+        when (state) {
             is HomepageUiState.Content -> HomepageContent(
-                uiState = it,
+                uiState = state,
                 onMealClicked = onMealClicked,
                 onAddToFavouriteCLick = onAddToFavouriteCLick,
             )
 
             is HomepageUiState.Error -> HomepageError(
                 onRefreshClick = onRefreshClick,
-                uiState = it,
+                uiState = state,
             )
 
             HomepageUiState.Loading -> CircularProgressIndicator(
