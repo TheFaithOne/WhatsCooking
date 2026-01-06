@@ -10,6 +10,6 @@ fun getDatabaseBuilder(context: Context): RoomDatabase.Builder<MealDatabase> {
     val dbFile = appContext.getDatabasePath("meal.db")
     return Room.databaseBuilder<MealDatabase>(
         context = appContext,
-        name = dbFile.absolutePath
+        name = dbFile.absolutePath,
     )
 }

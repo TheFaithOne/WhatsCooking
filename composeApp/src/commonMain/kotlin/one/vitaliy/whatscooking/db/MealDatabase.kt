@@ -9,7 +9,7 @@ import kotlinx.coroutines.IO
 
 @Database(entities = [FavouriteMealEntity::class], version = 1)
 @ConstructedBy(AppDatabaseConstructor::class)
-abstract class MealDatabase: RoomDatabase() {
+abstract class MealDatabase : RoomDatabase() {
     abstract fun getFavouriteMealDao(): FavouriteMealDao
 }
 

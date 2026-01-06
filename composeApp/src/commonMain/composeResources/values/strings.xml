@@ -3,7 +3,8 @@
     <string name="app_name">What\'s Cooking</string>
 
     <!-- Homepage Screen -->
-    <string name="homepage_recently_added_recipes">Recently added recipes</string>
+    <string name="homepage_recently_added_recipes_title">Recently added</string>
+    <string name="homepage_recently_added_recipes_subtitle">Fresh recipes to inspire your next meal</string>
 
     <!-- Meal Detail Screen -->
     <string name="meal_detail_watch_youtube">Watch on YouTube</string>
@@ -16,4 +17,9 @@
     <!-- Error Messages -->
     <string name="error_generic">Ooops, something went wrong!\n%1$s</string>
     <string name="error_retry">Retry</string>
+
+    <string name="ingredient_count">%1$d ingredients</string>
+
+    <!--Region content description-->
+    <string name="toggle_favourite_content_description">Toggle favourite meal</string>
 </resources>

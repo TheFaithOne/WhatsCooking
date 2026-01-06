@@ -8,6 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import coil3.ColorImage
+import coil3.annotation.ExperimentalCoilApi
+import coil3.compose.AsyncImagePreviewHandler
+import coil3.compose.LocalAsyncImagePreviewHandler
 
 // Material 3 color schemes for compatibility
 private val LightColorScheme = lightColorScheme(
@@ -83,6 +89,7 @@ val LocalWhatsCookingTypography = staticCompositionLocalOf {
     whatsCookingTypography
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun WhatsCookingTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -97,10 +104,14 @@ fun WhatsCookingTheme(
         darkTheme -> darkColors
         else -> lightColors
     }
+    val previewHandler = AsyncImagePreviewHandler {
+        ColorImage(Color.Red.toArgb())
+    }
 
     CompositionLocalProvider(
         LocalWhatsCookingColors provides customColors,
         LocalWhatsCookingTypography provides whatsCookingTypography,
+        LocalAsyncImagePreviewHandler provides previewHandler,
     ) {
         MaterialTheme(
             colorScheme = materialColorScheme,

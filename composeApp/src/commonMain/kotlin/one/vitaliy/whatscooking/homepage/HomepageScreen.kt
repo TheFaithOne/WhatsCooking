@@ -1,45 +1,32 @@
 package one.vitaliy.whatscooking.homepage
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
 import kotlinx.serialization.Serializable
 import one.vitaliy.whatscooking.compose.PreviewTheme
 import one.vitaliy.whatscooking.data.MealDomain
+import one.vitaliy.whatscooking.ui.composables.MealCard
 import one.vitaliy.whatscooking.ui.theme.WhatsCookingTheme
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.jetbrains.compose.ui.tooling.preview.PreviewParameter
@@ -48,9 +35,8 @@ import org.koin.compose.viewmodel.koinViewModel
 import whatscooking.composeapp.generated.resources.Res
 import whatscooking.composeapp.generated.resources.error_generic
 import whatscooking.composeapp.generated.resources.error_retry
-import whatscooking.composeapp.generated.resources.homepage_recently_added_recipes
-import whatscooking.composeapp.generated.resources.ic_favourite_filled
-import whatscooking.composeapp.generated.resources.ic_favourite_outline
+import whatscooking.composeapp.generated.resources.homepage_recently_added_recipes_subtitle
+import whatscooking.composeapp.generated.resources.homepage_recently_added_recipes_title
 
 @Serializable
 object HomepageScreen
@@ -134,8 +120,13 @@ private fun RecentlyAddedRow(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
-            text = stringResource(Res.string.homepage_recently_added_recipes),
+            text = stringResource(Res.string.homepage_recently_added_recipes_title),
             style = WhatsCookingTheme.typography.headline.medium,
+            modifier = Modifier.padding(horizontal = 16.dp),
+        )
+        Text(
+            text = stringResource(Res.string.homepage_recently_added_recipes_subtitle),
+            style = WhatsCookingTheme.typography.label.medium,
             modifier = Modifier.padding(horizontal = 16.dp),
         )
         LazyRow(
@@ -149,79 +140,6 @@ private fun RecentlyAddedRow(
                     modifier = Modifier.animateItem(),
                     onMealClicked = onMealClicked,
                     onAddToFavouriteCLick = onAddToFavouriteCLick,
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun MealCard(
-    meal: MealDomain,
-    onMealClicked: (String) -> Unit,
-    onAddToFavouriteCLick: (MealDomain) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(8.dp),
-        onClick = { onMealClicked(meal.id) },
-    ) {
-        Box {
-            Column(
-                modifier = Modifier.padding(bottom = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                AsyncImage(
-                    model = meal.thumbnailUrl,
-                    contentDescription = meal.name,
-                    contentScale = ContentScale.Crop,
-                )
-                Text(
-                    text = meal.name,
-                    style = WhatsCookingTheme.typography.body.medium,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-                ) {
-                    Text(
-                        text = meal.origin.orEmpty(),
-                        style = WhatsCookingTheme.typography.label.medium,
-                        textAlign = TextAlign.Center,
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(
-                        text = meal.category.orEmpty(),
-                        style = WhatsCookingTheme.typography.label.medium,
-                        textAlign = TextAlign.Center,
-                    )
-                }
-            }
-            IconButton(
-                onClick = { onAddToFavouriteCLick(meal) },
-                modifier = Modifier.align(Alignment.TopEnd).padding(top = 8.dp, end = 8.dp)
-                    .size(64.dp)
-            ) {
-                Icon(
-                    painterResource(
-                        resource = if (meal.isFavourite) {
-                            Res.drawable.ic_favourite_filled
-                        } else {
-                            Res.drawable.ic_favourite_outline
-                        }
-                    ),
-                    // FIXME: Add proper contentDescription
-                    contentDescription = null,
-                    modifier = Modifier.background(
-                        color = WhatsCookingTheme.colors.background.card,
-                        shape = CircleShape
-                    )
-                        .padding(8.dp)
                 )
             }
         }
@@ -284,9 +202,9 @@ private class HomepagePreviewProvider : PreviewParameterProvider<HomepageUiState
                     ingredientsWithMeasures = mapOf(
                         "Chicken" to "1 whole",
                         "Tomato" to "2 chopped",
-                        "Onions" to "2 sliced"
+                        "Onions" to "2 sliced",
                     ),
-                    isFavourite = false
+                    isFavourite = false,
                 ),
                 MealDomain(
                     id = "52772",
@@ -299,9 +217,9 @@ private class HomepagePreviewProvider : PreviewParameterProvider<HomepageUiState
                     ingredientsWithMeasures = mapOf(
                         "Chicken" to "750g",
                         "Soy Sauce" to "3 tbsp",
-                        "Ginger" to "1 tsp"
+                        "Ginger" to "1 tsp",
                     ),
-                    isFavourite = false
+                    isFavourite = false,
                 ),
                 MealDomain(
                     id = "52804",
@@ -314,9 +232,9 @@ private class HomepagePreviewProvider : PreviewParameterProvider<HomepageUiState
                     ingredientsWithMeasures = mapOf(
                         "Fries" to "500g",
                         "Cheese Curds" to "200g",
-                        "Gravy" to "200ml"
+                        "Gravy" to "200ml",
                     ),
-                    isFavourite = false
+                    isFavourite = false,
                 ),
             ),
         ),

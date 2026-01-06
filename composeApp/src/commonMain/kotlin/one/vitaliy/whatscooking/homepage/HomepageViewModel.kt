@@ -8,9 +8,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import one.vitaliy.whatscooking.data.MealDomain
 import one.vitaliy.whatscooking.homepage.api.HomepageRepository
-import one.vitaliy.whatscooking.networking.MealDto
 import one.vitaliy.whatscooking.usecases.AddToFavouritesResult
-import one.vitaliy.whatscooking.usecases.AddToFavouritesUseCase
+import one.vitaliy.whatscooking.usecases.ToggleFavouriteMealUseCase
 
 /**
  * ViewModel for the Homepage screen.
@@ -18,7 +17,7 @@ import one.vitaliy.whatscooking.usecases.AddToFavouritesUseCase
  */
 class HomepageViewModel(
     private val homepageRepository: HomepageRepository,
-    private val addToFavourites: AddToFavouritesUseCase,
+    private val toggleFavourite: ToggleFavouriteMealUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<HomepageUiState>(HomepageUiState.Loading)
@@ -54,11 +53,12 @@ class HomepageViewModel(
 
     fun addMealToFavourites(mealDto: MealDomain) {
         viewModelScope.launch {
-            val result = addToFavourites(mealDto)
+            val result = toggleFavourite(mealDto)
             when (result) {
                 is AddToFavouritesResult.Failure -> {}
                 AddToFavouritesResult.LimitReached -> {}
-                AddToFavouritesResult.Success -> {}
+                AddToFavouritesResult.AddSuccess -> {}
+                AddToFavouritesResult.RemoveSuccess -> {}
             }
         }
     }
