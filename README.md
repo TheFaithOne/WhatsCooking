@@ -78,6 +78,7 @@ composeApp/src/
 update the version of the API to v1 if you don't have any
 
 MEAL_DB_API_KEY=your_api_key_here
+CALORIE_NINJAS_API_KEY=your_api_key_here
 
 
 ### Android Application

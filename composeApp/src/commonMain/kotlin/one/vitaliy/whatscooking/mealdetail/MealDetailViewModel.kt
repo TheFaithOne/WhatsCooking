@@ -6,7 +6,7 @@ import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import one.vitaliy.whatscooking.networking.MealDto
+import one.vitaliy.whatscooking.data.RecipeDomain
 
 /**
  * ViewModel for the Meal Detail screen.
@@ -27,10 +27,7 @@ internal class MealDetailViewModel(
         viewModelScope.launch {
             _uiState.value = MealDetailUiState.Loading
             runCatching {
-                val response = repository.getMealById(mealId)
-                requireNotNull(response.meals?.firstOrNull()) {
-                    "No meal found with ID: $mealId"
-                }
+                repository.getMealById(mealId)
             }.onFailure { throwable ->
                 Napier.e(throwable) { "Failed to fetch meal details for ID: $mealId" }
                 _uiState.value = MealDetailUiState.Error(throwable)
@@ -53,7 +50,7 @@ internal class MealDetailViewModel(
  * UI state for the Meal Detail screen.
  */
 internal sealed interface MealDetailUiState {
-    data class Content(val mealDto: MealDto) : MealDetailUiState
+    data class Content(val recipe: RecipeDomain) : MealDetailUiState
     data object Loading : MealDetailUiState
     data class Error(val throwable: Throwable) : MealDetailUiState
 }
