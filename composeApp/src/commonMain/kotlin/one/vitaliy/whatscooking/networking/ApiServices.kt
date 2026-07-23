@@ -15,9 +15,9 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import one.vitaliy.whatscooking.BuildKonfig
 
-class CalorieNinjasApiServices {
-    private val baseUrl = "https://api.calorieninjas.com/v1/"
-    private val apiKey = BuildKonfig.CALORIE_NINJAS_API_KEY
+class ApiNinjasApiServices {
+    private val baseUrl = "https://api.api-ninjas.com/v3/"
+    private val apiKey = BuildKonfig.API_NINJAS_API_KEY
 
     private val json = Json {
         coerceInputValues = true
@@ -39,27 +39,31 @@ class CalorieNinjasApiServices {
         }
     }
 
-    suspend fun getRecipes(query: String): RecipesResponse {
+    suspend fun getRecipes(query: String): List<RecipeDto> {
         return httpClient.get("recipe") {
-            parameter("query", query)
+            parameter("title", query)
         }.body()
     }
 }
-
-@Serializable
-data class RecipesResponse(
-    @SerialName("items")
-    val items: List<RecipeDto> = emptyList(),
-)
 
 @Serializable
 data class RecipeDto(
     @SerialName("title")
     val title: String,
     @SerialName("ingredients")
-    val ingredients: String,
+    val ingredients: List<RecipeIngredientDto> = emptyList(),
     @SerialName("servings")
-    val servings: String,
+    val servings: String = "",
     @SerialName("instructions")
-    val instructions: String,
+    val instructions: List<String> = emptyList(),
+)
+
+@Serializable
+data class RecipeIngredientDto(
+    @SerialName("name")
+    val name: String,
+    @SerialName("quantity")
+    val quantity: Double? = null,
+    @SerialName("unit")
+    val unit: String? = null,
 )

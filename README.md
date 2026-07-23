@@ -78,7 +78,7 @@ composeApp/src/
 update the version of the API to v1 if you don't have any
 
 MEAL_DB_API_KEY=your_api_key_here
-CALORIE_NINJAS_API_KEY=your_api_key_here
+API_NINJAS_API_KEY=your_api_key_here
 
 
 ### Android Application
@@ -106,7 +106,7 @@ IDE's toolbar.
 
 ## API
 
-This app uses [TheMealDB API](https://www.themealdb.com/api.php) to fetch recipe data.
+This app uses [TheMealDB API](https://www.themealdb.com/api.php) and [API Ninjas Recipe API](https://api-ninjas.com/api/recipe) to fetch recipe data.
 
 ## Code Quality
 

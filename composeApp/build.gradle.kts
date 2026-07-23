@@ -21,7 +21,10 @@ val localProperties = Properties().apply {
     }
 }
 val mealDbApiKey: String = localProperties.getProperty("MEAL_DB_API_KEY", "")
-val calorieNinjasApiKey: String = localProperties.getProperty("CALORIE_NINJAS_API_KEY", "")
+val apiNinjasApiKey: String = localProperties.getProperty(
+    "API_NINJAS_API_KEY",
+    localProperties.getProperty("CALORIE_NINJAS_API_KEY", ""),
+)
 
 kotlin {
     androidTarget {
@@ -123,6 +126,6 @@ buildkonfig {
     // Default config
     defaultConfigs {
         buildConfigField(STRING, "MEAL_DB_API_KEY", mealDbApiKey)
-        buildConfigField(STRING, "CALORIE_NINJAS_API_KEY", calorieNinjasApiKey)
+        buildConfigField(STRING, "API_NINJAS_API_KEY", apiNinjasApiKey)
     }
 }

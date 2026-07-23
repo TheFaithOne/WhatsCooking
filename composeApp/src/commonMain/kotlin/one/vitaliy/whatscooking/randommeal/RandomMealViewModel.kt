@@ -6,7 +6,7 @@ import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import one.vitaliy.whatscooking.networking.MealDto
+import one.vitaliy.whatscooking.data.RecipeDomain
 
 /**
  * ViewModel for the Random Meal screen.
@@ -30,16 +30,11 @@ class RandomMealViewModel(
         viewModelScope.launch {
             _uiState.value = RandomMealUiState.Loading
             runCatching {
-                repository.getRandomMeal()
-            }.onSuccess { response ->
-                val meal = response.meals?.firstOrNull()
-                if (meal != null) {
-                    _uiState.value = RandomMealUiState.Content(meal)
-                } else {
-                    _uiState.value = RandomMealUiState.Error(Exception("No meal found"))
-                }
+                repository.getRandomRecipe()
+            }.onSuccess { recipe ->
+                _uiState.value = RandomMealUiState.Content(recipe)
             }.onFailure { throwable ->
-                Napier.e(throwable) { "Failed to fetch random meal" }
+                Napier.e(throwable) { "Failed to fetch random recipe" }
                 _uiState.value = RandomMealUiState.Error(throwable)
             }
         }
@@ -50,7 +45,7 @@ class RandomMealViewModel(
  * UI state for the Random Meal screen.
  */
 sealed interface RandomMealUiState {
-    data class Content(val mealDto: MealDto) : RandomMealUiState
+    data class Content(val recipe: RecipeDomain) : RandomMealUiState
     data object Loading : RandomMealUiState
     data class Error(val throwable: Throwable) : RandomMealUiState
 }
