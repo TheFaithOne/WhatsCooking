@@ -103,6 +103,7 @@ private fun MealDetailContent(
         Text(
             text = uiState.mealDto.instructions.orEmpty(),
             style = WhatsCookingTheme.typography.body.medium,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         )
         if (!uiState.mealDto.youtubeUrl.isNullOrBlank()) {
             val uriHandler = LocalUriHandler.current
