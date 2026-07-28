@@ -1,6 +1,11 @@
 package one.vitaliy.whatscooking.mealdetail
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -39,9 +44,12 @@ import whatscooking.composeapp.generated.resources.meal_detail_error_title
 import whatscooking.composeapp.generated.resources.meal_detail_refresh
 import whatscooking.composeapp.generated.resources.meal_detail_watch_youtube
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun MealDetailScreen(
     mealId: String,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
@@ -54,13 +62,18 @@ internal fun MealDetailScreen(
         uiState = uiState,
         onRefresh = { viewModel.refresh(mealId) },
         modifier = modifier.padding(paddingValues),
+        sharedTransitionScope = sharedTransitionScope,
+        animatedVisibilityScope = animatedVisibilityScope,
     )
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun MealDetail(
     uiState: MealDetailUiState,
     onRefresh: () -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
 ) {
     AnimatedContent(
@@ -72,15 +85,23 @@ private fun MealDetail(
                 modifier = Modifier.fillMaxSize().wrapContentHeight(),
             )
 
-            is MealDetailUiState.Content -> MealDetailContent(uiState = it)
+            is MealDetailUiState.Content -> MealDetailContent(
+                uiState = it,
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope
+            )
+
             is MealDetailUiState.Error -> MealDetailError(uiState = it, onRefresh = onRefresh)
         }
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun MealDetailContent(
     uiState: MealDetailUiState.Content,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -88,12 +109,19 @@ private fun MealDetailContent(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        AsyncImage(
-            model = uiState.mealDto.imageUrl,
-            contentDescription = uiState.mealDto.name,
-            contentScale = ContentScale.FillWidth,
-            modifier = Modifier.fillMaxWidth(),
-        )
+        with(sharedTransitionScope) {
+            AsyncImage(
+                model = uiState.mealDto.imageUrl,
+                contentDescription = uiState.mealDto.name,
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier.fillMaxWidth().sharedElement(
+                    sharedContentState = sharedTransitionScope.rememberSharedContentState(
+                        key = "image-${uiState.mealDto.id}"
+                    ),
+                    animatedVisibilityScope = animatedVisibilityScope
+                ),
+            )
+        }
         Text(
             text = uiState.mealDto.name.orEmpty(),
             style = WhatsCookingTheme.typography.headline.medium,
@@ -181,11 +209,38 @@ private fun MealDetailError(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview
 @Composable
 private fun MealDetailPreview() {
     PreviewTheme {
-        MealDetailScreen(paddingValues = PaddingValues(), mealId = "")
+        SharedTransitionLayout {
+            AnimatedVisibility(visible = true) {
+                MealDetail(
+                    uiState = MealDetailUiState.Content(
+                        mealDto = MealDto(
+                            id = "52940",
+                            name = "Brown Stew Chicken",
+                            areaOfOrigin = "Jamaican",
+                            category = "Chicken",
+                            imageUrl = "https://www.themealdb.com/images/media/meals/sypxpx1515365095.jpg",
+                            instructions = "Prepare the chicken by cutting it into pieces, " +
+                                "season, and cook until tender.",
+                            strIngredient1 = "Chicken",
+                            strMeasure1 = "1 whole",
+                            strIngredient2 = "Tomato",
+                            strMeasure2 = "2 chopped",
+                            tags = "Stew",
+                            youtubeUrl = "https://www.youtube.com/watch?v=example",
+                        ),
+                    ),
+                    onRefresh = {},
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedVisibilityScope = this,
+                    modifier = Modifier.padding(PaddingValues()),
+                )
+            }
+        }
     }
 }
 

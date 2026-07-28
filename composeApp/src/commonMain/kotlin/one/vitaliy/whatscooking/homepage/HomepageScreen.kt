@@ -1,6 +1,11 @@
 package one.vitaliy.whatscooking.homepage
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -41,9 +46,12 @@ import whatscooking.composeapp.generated.resources.homepage_recently_added_recip
 @Serializable
 object HomepageScreen
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 internal fun HomepageScreen(
     navigateToMealDetail: (String) -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     paddingValues: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
@@ -51,6 +59,8 @@ internal fun HomepageScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     HomepageContainer(
         uiState,
+        sharedTransitionScope = sharedTransitionScope,
+        animatedVisibilityScope = animatedVisibilityScope,
         onRefreshClick = viewModel::refresh,
         onAddToFavouriteCLick = viewModel::addMealToFavourites,
         onMealClicked = navigateToMealDetail,
@@ -58,9 +68,12 @@ internal fun HomepageScreen(
     )
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun HomepageContainer(
     uiState: HomepageUiState,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onRefreshClick: () -> Unit,
     onMealClicked: (String) -> Unit,
     onAddToFavouriteCLick: (MealDomain) -> Unit,
@@ -83,6 +96,8 @@ private fun HomepageContainer(
             is HomepageUiState.Content -> HomepageContent(
                 uiState = state,
                 onMealClicked = onMealClicked,
+                sharedTransitionScope = sharedTransitionScope,
+                animatedVisibilityScope = animatedVisibilityScope,
                 onAddToFavouriteCLick = onAddToFavouriteCLick,
             )
 
@@ -98,10 +113,13 @@ private fun HomepageContainer(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun HomepageContent(
     uiState: HomepageUiState.Content,
     onMealClicked: (String) -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onAddToFavouriteCLick: (MealDomain) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -113,15 +131,20 @@ private fun HomepageContent(
             recentlyAdded = uiState.latestMeals,
             onMealClicked = onMealClicked,
             onAddToFavouriteCLick = onAddToFavouriteCLick,
+            sharedTransitionScope = sharedTransitionScope,
+            animatedVisibilityScope = animatedVisibilityScope,
         )
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun RecentlyAddedRow(
     recentlyAdded: List<MealDomain>,
     onMealClicked: (String) -> Unit,
     onAddToFavouriteCLick: (MealDomain) -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -149,6 +172,8 @@ private fun RecentlyAddedRow(
                     modifier = Modifier.animateItem(),
                     onMealClicked = onMealClicked,
                     onAddToFavouriteCLick = onAddToFavouriteCLick,
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope,
                 )
             }
         }
@@ -180,18 +205,25 @@ private fun HomepageError(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview
 @Composable
 private fun HomepagePreview(
     @PreviewParameter(HomepagePreviewProvider::class) uiState: HomepageUiState,
 ) {
     PreviewTheme {
-        HomepageContainer(
-            uiState,
-            onRefreshClick = {},
-            onMealClicked = {},
-            onAddToFavouriteCLick = {},
-        )
+        SharedTransitionLayout {
+            AnimatedVisibility(visible = true) {
+                HomepageContainer(
+                    uiState,
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedVisibilityScope = this,
+                    onRefreshClick = {},
+                    onMealClicked = {},
+                    onAddToFavouriteCLick = {},
+                )
+            }
+        }
     }
 }
 
