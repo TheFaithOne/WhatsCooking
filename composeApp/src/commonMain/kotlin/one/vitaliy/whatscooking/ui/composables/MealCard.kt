@@ -1,5 +1,10 @@
 package one.vitaliy.whatscooking.ui.composables
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,11 +34,14 @@ import whatscooking.composeapp.generated.resources.Res
 import whatscooking.composeapp.generated.resources.ic_chef_hat
 import whatscooking.composeapp.generated.resources.ingredient_count
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun MealCard(
     meal: MealDomain,
     onMealClicked: (String) -> Unit,
     onAddToFavouriteCLick: (MealDomain) -> Unit,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -46,10 +54,10 @@ fun MealCard(
                 modifier = Modifier.padding(bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
             ) {
-                AsyncImage(
-                    model = meal.thumbnailUrl,
-                    contentDescription = meal.name,
-                    contentScale = ContentScale.Crop,
+                MealCardImage(
+                    meal = meal,
+                    sharedTransitionScope = sharedTransitionScope,
+                    animatedVisibilityScope = animatedVisibilityScope,
                 )
                 Text(
                     text = meal.category.orEmpty(),
@@ -89,17 +97,47 @@ fun MealCard(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+private fun MealCardImage(
+    meal: MealDomain,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
+    modifier: Modifier = Modifier,
+) {
+    with(sharedTransitionScope) {
+        AsyncImage(
+            model = meal.thumbnailUrl,
+            contentDescription = meal.name,
+            contentScale = ContentScale.Crop,
+            modifier = modifier.sharedElement(
+                sharedContentState = sharedTransitionScope.rememberSharedContentState(
+                    key = "image-${meal.id}"
+                ),
+                animatedVisibilityScope = animatedVisibilityScope
+            )
+        )
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Preview
 @Composable
 private fun MealCardPreview(
     @PreviewParameter(MealPreviewProvider::class) meal: MealDomain,
 ) {
     PreviewTheme {
-        MealCard(
-            meal = meal,
-            onAddToFavouriteCLick = {},
-            onMealClicked = {},
-        )
+        SharedTransitionLayout {
+            AnimatedVisibility(visible = true) {
+                MealCard(
+                    meal = meal,
+                    sharedTransitionScope = this@SharedTransitionLayout,
+                    animatedVisibilityScope = this,
+                    onAddToFavouriteCLick = {},
+                    onMealClicked = {},
+                )
+            }
+        }
     }
 }
 

@@ -1,5 +1,7 @@
 package one.vitaliy.whatscooking
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
@@ -14,6 +16,7 @@ import one.vitaliy.whatscooking.mealdetail.MealDetailScreenRoute
 import one.vitaliy.whatscooking.randommeal.RandomMealScreen
 import one.vitaliy.whatscooking.ui.theme.WhatsCookingTheme
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun App() {
     val navController = rememberNavController()
@@ -23,29 +26,38 @@ fun App() {
                 NavigationBar(navController)
             },
         ) { paddingValues ->
-            NavHost(navController = navController, startDestination = HomepageScreen) {
-                composable<RandomMealScreen> {
-                    RandomMealScreen(
-                        paddingValues = paddingValues,
-                        onNavigateToCategories = { navController.navigate(CategoriesPage) },
-                    )
-                }
-                composable<CategoriesPage> {
-                    CategoriesPage(
-                        paddingValues = paddingValues,
-                    )
-                }
-                composable<HomepageScreen> {
-                    HomepageScreen(
-                        paddingValues = paddingValues,
-                        navigateToMealDetail = { mealId ->
-                            navController.navigate(MealDetailScreenRoute(mealId))
-                        },
-                    )
-                }
-                composable<MealDetailScreenRoute> {
-                    val mealId = it.toRoute<MealDetailScreenRoute>().mealId
-                    MealDetailScreen(paddingValues = paddingValues, mealId = mealId)
+            SharedTransitionLayout {
+                NavHost(navController = navController, startDestination = HomepageScreen) {
+                    composable<RandomMealScreen> {
+                        RandomMealScreen(
+                            paddingValues = paddingValues,
+                            onNavigateToCategories = { navController.navigate(CategoriesPage) },
+                        )
+                    }
+                    composable<CategoriesPage> {
+                        CategoriesPage(
+                            paddingValues = paddingValues,
+                        )
+                    }
+                    composable<HomepageScreen> {
+                        HomepageScreen(
+                            paddingValues = paddingValues,
+                            sharedTransitionScope = this@SharedTransitionLayout,
+                            animatedVisibilityScope = this,
+                            navigateToMealDetail = { mealId ->
+                                navController.navigate(MealDetailScreenRoute(mealId))
+                            },
+                        )
+                    }
+                    composable<MealDetailScreenRoute> {
+                        val mealId = it.toRoute<MealDetailScreenRoute>().mealId
+                        MealDetailScreen(
+                            paddingValues = paddingValues,
+                            mealId = mealId,
+                            sharedTransitionScope = this@SharedTransitionLayout,
+                            animatedVisibilityScope = this,
+                        )
+                    }
                 }
             }
         }
